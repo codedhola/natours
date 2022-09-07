@@ -1,0 +1,27 @@
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "Natours project by jonas",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codedhola/natours"
+  },
+  "keywords": [
+    "backend",
+    "nodejs"
+  ],
+  "author": "codedhola & jonas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codedhola/natours/issues"
+  },
+  "homepage": "https://github.com/codedhola/natours#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
