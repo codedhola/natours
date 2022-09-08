@@ -7,6 +7,13 @@ app.use(express.json());
 
 const fileData = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, "utf-8"));
 
+// MIDDLEWARE TO SHOW TIMER => <REQ.TIMER>
+app.use((req, res, next) => {
+    const timer = new Date();
+    req.timer = timer.toLocaleString();
+    next();
+});
+
 
 const getAllTours = (req, res) => {
     const data = fileData;
