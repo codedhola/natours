@@ -1,4 +1,5 @@
 const fs = require("fs");
+const url = require("url");
 
 const express = require("express");
 const app = express();
@@ -10,6 +11,7 @@ const fileData = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-si
 // MIDDLEWARE TO SHOW TIMER => <REQ.TIMER>
 app.use((req, res, next) => {
     const timer = new Date();
+     req.urlLink = req.method; // GET'S THE METHOD FROM CALLING CREATED URLLINK
     req.timer = timer.toLocaleString();
     next();
 });
@@ -17,7 +19,8 @@ app.use((req, res, next) => {
 
 const getAllTours = (req, res) => {
     const data = fileData;
-    console.log(req.timer)
+    console.log(req.timer);
+    console.log(req.urlLink)
     res.status(200).json({
         "status" : "success",
         "length" : data.length,
