@@ -1,44 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
-const getAllUsers = (req, res) => {
-    res.status(500).send({
-        status: "Failed",
-        message: "USER haven't been created yet... check back"
-    });
-}
-
-const getUserById = (req, res) => {
-    res.status(500).send({
-        status: "Failed",
-        message: "USER haven't been created yet... check back"
-    });
-}
-const createUser = (req, res) => {
-    res.status(500).send({
-        status: "Failed",
-        message: "USER haven't been created yet... check back"
-    });
-}
-
-const editUser = (req, res) => {
-    res.status(500).send({
-        status: "Failed",
-        message: "USER haven't been created yet... check back"
-    });
-}
-
-const deleteUser = (req, res) => {
-    res.status(500).send({
-        status: "Failed",
-        message: "USER haven't been created yet... check back"
-    });
-}
-
-
-
-
-
+const { getAllUsers, createUser, getUserById, editUser, deleteUser } = require("../controllers/userControllers");
 
 // GET ALL USER
 router.get("/", getAllUsers);
