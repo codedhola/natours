@@ -3,8 +3,7 @@ const fileData = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`,
 
 
 const checkId = (req, res, next, val) => {
-    const param = req.params;
-    const tour = fileData.find(el => el.id == param.id);
+    const tour = fileData.find(el => el.id == val);
     //  TOUR RECEIVES A PARTICULAR ID TOUR
     if(!tour){
         return res.status(404).send({
@@ -13,6 +12,19 @@ const checkId = (req, res, next, val) => {
         })
     }
     console.log(val)
+    next();
+}
+
+const checkBody = (req, res, next) => {
+    const {name , difficulty, price} = req.body;
+    if(!name || !difficulty || !price){
+        return res.status(400).json({
+            Status: "Bad request",
+            message: "request incoming not completely validated"
+        });
+    }
+    const body = {name , difficulty, price}
+    console.log(body);
     next();
 }
 
@@ -96,5 +108,6 @@ module.exports = {
     getTourById,
     editTour,
     deleteTour,
-    checkId
+    checkId,
+    checkBody
 }
