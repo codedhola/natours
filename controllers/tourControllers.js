@@ -1,6 +1,21 @@
 const fs = require("fs");
 const fileData = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`, "utf-8"));
 
+
+const checkId = (req, res, next, val) => {
+    const param = req.params;
+    const tour = fileData.find(el => el.id == param.id);
+    //  TOUR RECEIVES A PARTICULAR ID TOUR
+    if(!tour){
+        return res.status(404).send({
+            status: "unsuccessful",
+            message: "couldn't find the tour with the given id"
+        })
+    }
+    console.log(val)
+    next();
+}
+
 const getAllTours = (req, res) => {
     const data = fileData;
     console.log(req.timer);
@@ -29,15 +44,17 @@ const createTour = (req, res) => {
 };
 
 const getTourById = (req, res) => {
+    // const param = req.params;
+    // const tour = fileData.find(el => el.id == param.id);
+    // //  TOUR RECEIVES A PARTICULAR ID TOUR
+    // if(!tour){
+    //     return res.status(404).send({
+    //         status: "unsuccessful",
+    //         message: "couldn't find the tour with the given id"
+    //     })
+    // }
     const param = req.params;
     const tour = fileData.find(el => el.id == param.id);
-    //  TOUR RECEIVES A PARTICULAR ID TOUR
-    if(!tour){
-        return res.status(404).send({
-            status: "unsuccessful",
-            message: "couldn't find the tour with the given id"
-        })
-    }
     res.status(200).send({
         status: "success",
         data: {
@@ -47,28 +64,28 @@ const getTourById = (req, res) => {
 }
 
 const editTour = (req, res) => {
-    const param = req.params;
-    const tour = fileData.find(el => el.id == param.id);
+    // const param = req.params;
+    // const tour = fileData.find(el => el.id == param.id);
 
-    if(!tour){
-        return res.status(404).send({
-            status: "unsuccessful",
-            message: "Couldn't Find the tour to edit"
-        })
-    }
+    // if(!tour){
+    //     return res.status(404).send({
+    //         status: "unsuccessful",
+    //         message: "Couldn't Find the tour to edit"
+    //     })
+    // }
     res.send("EDITING");
 };
 
 const deleteTour = (req, res) => {
-    const param = req.params;
-    const tour = fileData.find(el => el.id == param.id);
+    // const param = req.params;
+    // const tour = fileData.find(el => el.id == param.id);
 
-    if(!tour){
-        return res.status(404).send({
-            status: "unsuccessful",
-            message: "Couldn't Find the tour to delete"
-        })
-    }
+    // if(!tour){
+    //     return res.status(404).send({
+    //         status: "unsuccessful",
+    //         message: "Couldn't Find the tour to delete"
+    //     })
+    // }
     res.send("DELETING");
 };
 
@@ -78,5 +95,6 @@ module.exports = {
     createTour,
     getTourById,
     editTour,
-    deleteTour
+    deleteTour,
+    checkId
 }
