@@ -1,3 +1,4 @@
+// USERS CONTROLLER FUNCTIONS
 const getAllUsers = (req, res) => {
     res.status(500).send({
         status: "Failed",

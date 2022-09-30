@@ -1,3 +1,5 @@
+// TOUR CONTROLLER FUNCTION
+
 const fs = require("fs");
 const fileData = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`, "utf-8"));
 
