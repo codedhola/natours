@@ -1,11 +1,11 @@
 const express = require("express");
 const dotenv = require("dotenv").config({path: "./config.env"});
 const morgan = require("morgan");
-
+const app = require("./app");
 const tourRoutes = require("./routes/tourRoutes");
 const userRoutes = require("./routes/userRoutes");
 
-const app = express();
+
 app.use(express.json());
 app.use(morgan("dev"));
 
