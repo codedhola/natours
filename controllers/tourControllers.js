@@ -18,7 +18,7 @@ const checkId = (req, res, next, val) => {
 }
 
 const checkBody = (req, res, next) => {
-    const {name , difficulty, price} = req.body;
+    const {name, difficulty, price} = req.body;
     if(!name || !difficulty || !price){
         return res.status(400).json({
             Status: "Bad request",

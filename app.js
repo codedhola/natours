@@ -6,11 +6,14 @@ const userRoutes = require("./routes/userRoutes");
 
 
 app.use(express.json());
-app.use(morgan("dev"));
+
+console.log(process.env.NODE_ENV);
+if(process.env.NODE_ENV){
+    app.use(morgan("dev"));
+}
 
 app.use("/api/v1/tours", tourRoutes);
 app.use("/api/v1/users", userRoutes);
-console.log(process.env)
 
 
 module.exports = app;
