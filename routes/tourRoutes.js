@@ -1,16 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { getAllTours, createTour, getTourById, editTour, deleteTour, checkId, checkBody } = require("../controllers/tourControllers");
+const { getAllTours, createTour, getTourById, editTour, deleteTour} = require("../controllers/tourControllers");
 
 // PARAM MIDDLE-WARE FOR ID;
-router.param("id", checkId);
-
 
 // GET ALL TOUR
 router.get("/", getAllTours);
 
 // CREATE A TOUR
-router.post("/", checkBody, createTour);
+router.post("/", createTour);
 
 // GET A TOUR BY ID
 router.get("/:id", getTourById);
