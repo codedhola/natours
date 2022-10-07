@@ -109,7 +109,16 @@ const editTour = async (req, res) => {
 };
 
 const deleteTour = async (req, res) => {
-    
+    try{
+        const tourId = req.params.id;
+        await Tour.findByIdAndDelete(tourId);
+        res.status(204).json()
+    }catch(err){
+        res.status(400).json({
+            status: "Failed",
+            message: err.message
+        })
+    }
 
 };
 
