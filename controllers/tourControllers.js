@@ -1,4 +1,5 @@
 // TOUR CONTROLLER FUNCTION
+const { json } = require("express");
 const fs = require("fs");
 const Tour = require("./../model/tourModel");
 
@@ -73,7 +74,7 @@ const createTour = async (req, res) => {
 };
 
 const getTourById = async (req, res) => {
-    const tourId = req.params.id
+    const tourId = req.params.id;
     try{
         const tour = await Tour.findById(tourId)
         res.status(200).json({
@@ -89,14 +90,27 @@ const getTourById = async (req, res) => {
 
 }
 
-const editTour = (req, res) => {
-    
-    res.send("EDITING");
+const editTour = async (req, res) => {
+    const tourId = req.params.id;
+    try{
+        const tour = await Tour.findByIdAndUpdate(tourId, req.body, {
+            new: true,
+        })
+        res.status(200).json({
+            status: "Successful",
+            message: tour
+        })
+    }catch(err){
+        res.status(400).json({
+            status: "Failed",
+            message: err.message
+        })
+    }
 };
 
-const deleteTour = (req, res) => {
+const deleteTour = async (req, res) => {
     
-    res.send("DELETING");
+
 };
 
 
