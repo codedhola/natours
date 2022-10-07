@@ -34,19 +34,59 @@ const Tour = require("./../model/tourModel");
 // }
 
 const getAllTours = async (req, res) => {
-    const tour = await Tour.find();
-    res.send(tour)
-};
+    try {
+        const tour = await Tour.find();
+        res.status(201).json({
+            status: "success",
+            results: tour.length,
+            message: {
+                tours: tour
+            }
+        })
+    }catch(err){
+        res.status(400).json({
+            status: "Failure",
+            message: err.message
+        })
+    }
+    
+}
 
 const createTour = async (req, res) => {
+
     const {name, price, rating} = req.body;
     const body = {name, price, rating};
-    const doc = await Tour.create(body);
-    res.send(doc);
+    try{
+        const newTour = await Tour.create(body);
+        res.status(201).json({
+            status: "success",
+            message: {
+                doc: newTour
+            }
+        });
+    }catch(err){
+        res.status(400).json({
+            status: "error",
+            message: err.message
+        })
+    }
 };
 
-const getTourById = (req, res) => {
-    
+const getTourById = async (req, res) => {
+    const tourId = req.params.id
+    try{
+        const tour = await Tour.findById(tourId)
+        res.status(200).json({
+            status: "Sucessful",
+            tour: tour
+        })
+    }catch(err){
+        res.status(400).json({
+            status: "Failed",
+            message: err.message
+        })
+    }
+
 }
 
 const editTour = (req, res) => {
