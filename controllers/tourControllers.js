@@ -33,15 +33,16 @@ const Tour = require("./../model/tourModel");
 //     next();
 // }
 
-const getAllTours = (req, res) => {
-    
+const getAllTours = async (req, res) => {
+    const tour = await Tour.find();
+    res.send(tour)
 };
 
 const createTour = async (req, res) => {
-    const body = req.body;
+    const {name, price, rating} = req.body;
+    const body = {name, price, rating};
     const doc = await Tour.create(body);
     res.send(doc);
-    
 };
 
 const getTourById = (req, res) => {
