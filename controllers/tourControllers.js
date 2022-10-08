@@ -1,7 +1,7 @@
 // TOUR CONTROLLER FUNCTION
-const { json } = require("express");
-const fs = require("fs");
-const Tour = require("./../model/tourModel");
+const { json } = require("express")
+const fs = require("fs")
+const Tour = require("./../model/tourModel")
 
 //const fileData = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`, "utf-8"));
 
@@ -36,8 +36,20 @@ const Tour = require("./../model/tourModel");
 
 const getAllTours = async (req, res) => {
     try {
-        const tour = await Tour.find();
-        res.status(201).json({
+        const queryObj = {...req.query};
+        let excludeFields = ["page", "sort", "limit", "fields"]
+        excludeFields.forEach(el => delete queryObj[el])
+
+        let queryStr = JSON.stringify(queryObj)
+        queryStr = queryStr.replace(/\b(gt|gte|lte|lt)\b/g, arg => `$${arg}`)
+        console.log(queryStr)
+        
+        const query = Tour.find(JSON.parse(queryStr));
+        console.log(queryObj)
+        // AWAIT TOUR QUERY
+        const tour = await query;
+
+        res.status(200).json({
             status: "success",
             results: tour.length,
             data: {
@@ -73,9 +85,10 @@ const createTour = async (req, res) => {
 };
 
 const getTourById = async (req, res) => {
-    const tourId = req.params.id;
+    const tourId = req.params.id
     try{
         const tour = await Tour.findById(tourId)
+        if(!tour) return res.status(404).json("Not found")
         res.status(200).json({
             status: "Sucessful",
             data: tour
