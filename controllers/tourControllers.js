@@ -40,7 +40,7 @@ const getAllTours = async (req, res) => {
         res.status(201).json({
             status: "success",
             results: tour.length,
-            message: {
+            data: {
                 tours: tour
             }
         })
@@ -55,13 +55,12 @@ const getAllTours = async (req, res) => {
 
 const createTour = async (req, res) => {
 
-    const {name, price, rating} = req.body;
-    const body = {name, price, rating};
+    const body = req.body;
     try{
         const newTour = await Tour.create(body);
         res.status(201).json({
             status: "success",
-            message: {
+            data: {
                 doc: newTour
             }
         });
@@ -79,7 +78,7 @@ const getTourById = async (req, res) => {
         const tour = await Tour.findById(tourId)
         res.status(200).json({
             status: "Sucessful",
-            tour: tour
+            data: tour
         })
     }catch(err){
         res.status(400).json({
