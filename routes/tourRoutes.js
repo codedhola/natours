@@ -7,7 +7,7 @@ const { getAllTours, createTour, getTourById, editTour, deleteTour, topBest} = r
 // GET ALL TOUR
 router.get("/", getAllTours);
 
-router.get("/top-best",topBest, getAllTours);
+router.get("/top-best", topBest, getAllTours);
 
 // CREATE A TOUR
 router.post("/", createTour);

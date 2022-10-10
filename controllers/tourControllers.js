@@ -1,6 +1,6 @@
 // TOUR CONTROLLER FUNCTION
-const fs = require("fs")
 const Tour = require("./../model/tourModel")
+const APIFeatures = require("./../utils/apiFeatures")  // APIFEATURE CLASS
 
 //const fileData = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`, "utf-8"));
 
@@ -33,50 +33,53 @@ const Tour = require("./../model/tourModel")
 //     next();
 // }
 
+
 const getAllTours = async (req, res) => {
     try {
         // QUERYING
-        const queryObj = {...req.query};
-        let excludeFields = ["page", "sort", "limit", "fields"]
-        excludeFields.forEach(el => delete queryObj[el])
+        // const queryObj = {...req.query};
+        // let excludeFields = ["page", "sort", "limit", "fields"]
+        // excludeFields.forEach(el => delete queryObj[el])
 
-        // PARSE AND REPLACE QUERY FOR SEARCH IN DATABASE
-        let queryStr = JSON.stringify(queryObj)
-        queryStr = queryStr.replace(/\b(gt|gte|lte|lt)\b/g, arg => `$${arg}`) //CORRESPOND QUERY TO MONGODB
+        // // PARSE AND REPLACE QUERY FOR SEARCH IN DATABASE
+        // let queryStr = JSON.stringify(queryObj)
+        // queryStr = queryStr.replace(/\b(gt|gte|lte|lt)\b/g, arg => `$${arg}`) //CORRESPOND QUERY TO MONGODB
 
-        console.log(queryStr)
-        // SEARCH OR QUERY(IF FOUND) IN DATABASE
-        let query = Tour.find(JSON.parse(queryStr))
+        // console.log(queryStr)
+        // // SEARCH OR QUERY(IF FOUND) IN DATABASE
+        // let query = Tour.find(JSON.parse(queryStr))
+
+        const features = new APIFeatures(Tour.find(), req.query).Filter().Sort().Fields().Pagination()
 
         //SORTING
-        if(req.query.sort){
-            const sortby = req.query.sort.split(",").join(" ")
-            query = query.sort(sortby)
-        }else {
-            query = query.sort("-createdAt")
-        }
+        // if(req.query.sort){
+        //     const sortby = req.query.sort.split(",").join(" ")
+        //     query = query.sort(sortby)
+        // }else {
+        //     query = query.sort("-createdAt")
+        // }
 
         // FIELD LIMITING
-        if(req.query.fields){
-            let fields = req.query.fields.split(",").join(" ")
-            query = query.select(fields);
-        }else {
-            query = query.select("-__v")
-        }
+        // if(req.query.fields){
+        //     let fields = req.query.fields.split(",").join(" ")
+        //     query = query.select(fields);
+        // }else {
+        //     query = query.select("-__v")
+        // }
 
-        const page = (req.query.page * 1) || 1;
-        const limit = (req.query.limit * 1) || 4;
-        const skip = (page - 1) * limit;
+        // const page = (req.query.page * 1) || 1;
+        // const limit = (req.query.limit * 1) || 4;
+        // const skip = (page - 1) * limit;
 
-        // IMPLEMENTING PAGINATION
-        query = query.skip(skip).limit(limit);
+        // // IMPLEMENTING PAGINATION
+        // query = query.skip(skip).limit(limit);
 
         // if(req.query.page){
         //     const numTour = await Tour.countDocuments();
         //     if(skip >= numTour) throw new Error("This page havent been created yet");
         // }
         // AWAIT TOUR QUERY
-        const tour = await query;
+        const tour = await features.Query;
 
         // RESULT 
         res.status(200).json({
