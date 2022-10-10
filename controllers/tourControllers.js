@@ -64,6 +64,17 @@ const getAllTours = async (req, res) => {
             query = query.select("-__v")
         }
 
+        const page = (req.query.page * 1) || 1;
+        const limit = (req.query.limit * 1) || 4;
+        const skip = (page - 1) * limit;
+
+        // IMPLEMENTING PAGINATION
+        query = query.skip(skip).limit(limit);
+
+        // if(req.query.page){
+        //     const numTour = await Tour.countDocuments();
+        //     if(skip >= numTour) throw new Error("This page havent been created yet");
+        // }
         // AWAIT TOUR QUERY
         const tour = await query;
 
