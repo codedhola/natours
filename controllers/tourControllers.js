@@ -1,5 +1,4 @@
 // TOUR CONTROLLER FUNCTION
-const { json } = require("express")
 const fs = require("fs")
 const Tour = require("./../model/tourModel")
 
@@ -43,14 +42,17 @@ const getAllTours = async (req, res) => {
 
         // PARSE AND REPLACE QUERY FOR SEARCH IN DATABASE
         let queryStr = JSON.stringify(queryObj)
-        queryStr = queryStr.replace(/\b(gt|gte|lte|lt)\b/g, arg => `$${arg}`)
-        if(req.query.sort){
+        queryStr = queryStr.replace(/\b(gt|gte|lte|lt)\b/g, arg => `$${arg}`) //CORRESPOND QUERY TO MONGODB
 
-        }
-        console.log(req.query.sort)
         console.log(queryStr)
         // SEARCH OR QUERY(IF FOUND) IN DATABASE
-        const query = Tour.find(JSON.parse(queryStr));
+        let query = Tour.find(JSON.parse(queryStr))
+
+        //SORTING
+        if(req.query.sort){
+            const sortby = req.query.sort.split(",").join(" ")
+            query = query.sort(sortby)
+        }
 
         // AWAIT TOUR QUERY
         const tour = await query;
