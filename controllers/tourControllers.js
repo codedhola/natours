@@ -95,6 +95,13 @@ const getAllTours = async (req, res) => {
     
 }
 
+const topBest = async (req, res, next) => {
+    req.query.limit = "5";
+    req.query.sort = "-price,ratingsAverage";
+    req.query.fields = "name,price,summary,difficulty,ratingsAverage";
+    next();
+}
+
 const createTour = async (req, res) => {
     // GET DATA FROM USERS
     const body = req.body;
@@ -174,5 +181,6 @@ module.exports = {
     createTour,
     getTourById,
     editTour,
-    deleteTour
+    deleteTour,
+    topBest
 }
