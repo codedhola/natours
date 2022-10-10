@@ -35,7 +35,7 @@ const Tour = require("./../model/tourModel")
 
 const getAllTours = async (req, res) => {
     try {
-        // INIT QUERY OBJECT AND EXCLUDE UNNECCESARY QUERY
+        // QUERYING
         const queryObj = {...req.query};
         let excludeFields = ["page", "sort", "limit", "fields"]
         excludeFields.forEach(el => delete queryObj[el])
@@ -52,6 +52,16 @@ const getAllTours = async (req, res) => {
         if(req.query.sort){
             const sortby = req.query.sort.split(",").join(" ")
             query = query.sort(sortby)
+        }else {
+            query = query.sort("-createdAt")
+        }
+
+        // FIELD LIMITING
+        if(req.query.fields){
+            let fields = req.query.fields.split(",").join(" ")
+            query = query.select(fields);
+        }else {
+            query = query.select("-__v")
         }
 
         // AWAIT TOUR QUERY
