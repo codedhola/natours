@@ -1,4 +1,5 @@
 // TOUR CONTROLLER FUNCTION
+const { aggregate } = require("./../model/tourModel");
 const Tour = require("./../model/tourModel")
 const APIFeatures = require("./../utils/apiFeatures")  // APIFEATURE CLASS
 
@@ -178,6 +179,43 @@ const deleteTour = async (req, res) => {
 
 };
 
+const getTourStats = async (req, res) => {
+    try {
+        const stats = await Tour.aggregate([
+            {
+                $match: { ratingsAverage: {$gte: 4.5}}
+            },
+            {
+                $group: {
+                    _id: "$difficulty",
+                    numTours: { $sum: 1},
+                    avgRating: { $avg: "$ratingsAverage"},
+                    avgPrice: { $avg: "$price"},
+                    avgRate: { $avg: "$ratingsQuantity"},
+                    minPrice: { $min: "$price"},
+                    maxPrice: { $max: "$price"},
+                    inStock: { $sum: "$ratingsQuantity"}
+                }
+            },
+            {
+                $sort: { avgPrice: 1}
+            }
+        ])
+
+        res.status(200).json({
+            status: "Successful",
+            results: stats.length,
+            data: stats
+        })
+    }catch(err){
+        res.status(400).json({
+            status: "Failed",
+            message: err.message
+        })
+    }
+    
+}
+
 // EXPORT ALL CONTROLLER FUNCTION 
 module.exports = {
     getAllTours,
@@ -185,5 +223,6 @@ module.exports = {
     getTourById,
     editTour,
     deleteTour,
-    topBest
+    topBest,
+    getTourStats
 }
