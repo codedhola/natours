@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getAllTours, createTour, getTourById, editTour, deleteTour, topBest, getTourStats} = require("../controllers/tourControllers");
+const { getAllTours, createTour, getTourById, editTour, deleteTour, topBest, getTourStats, getMonthlyPlan} = require("../controllers/tourControllers");
 
 // PARAM MIDDLE-WARE FOR ID;
 
@@ -12,6 +12,8 @@ router.get("/top-best", topBest, getAllTours);
 
 // 
 router.get("/tour-stats", getTourStats);
+
+router.get("/tour-stats/:year", getMonthlyPlan);
 
 // CREATE A TOUR
 router.post("/", createTour);
