@@ -233,14 +233,30 @@ const getMonthlyPlan = async (req, res) => {
                     }   
                 }
             }
-            // ,
-            // {
-            //     $group: {
-            //         _id: { $month: "$startDates"},
-            //         numTourStarts: { $sum: 1},
-            //         tours: { $push: "$name"}
-            //     }
-            // }
+            ,
+            {
+                $group: {
+                    _id: { $month: "$startDates"},
+                    numTourStarts: { $sum: 1},
+                    tours: { $push: "$name"}
+                }
+            },
+            {
+                $addFields: {
+                    month: "$_id"
+                }
+            },
+            {
+                $project: {
+                    _id: 0
+                }
+            },
+            {
+                $sort: { numToursStarts: 1}
+            },
+            {
+                $limit: 5
+            }
         ]);
         res.status(200).json({
             status: "Successful",
