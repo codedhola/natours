@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 // CREATE A TOUR SCHEMA
 const tourSchema = new mongoose.Schema({
@@ -8,6 +9,7 @@ const tourSchema = new mongoose.Schema({
         required: [true, "Tour name must exist"]
         
     },
+    slug: String,
     ratingsAverage: {
         type: Number,
         default: 4.5
@@ -43,9 +45,21 @@ const tourSchema = new mongoose.Schema({
 }
 );
 
+// VIRTUAL DOCUMENT 
 tourSchema.virtual("durationsWeeks").get(function() {
     return this.duration / 7;
 })
+
+// DOCUMENT MIDDLEWARE
+tourSchema.pre("save", function(next) {
+    this.slug = slugify(this.name, { lower: true})
+    next();
+})
+
+// tourSchema.post("save", function(doc, next) {
+        
+//     next();
+// })
 
 // ASSIGN SCHEMA TO MODEL
 const Tour = mongoose.model("Tour", tourSchema);
