@@ -13,7 +13,7 @@ const tourSchema = new mongoose.Schema({
     slug: String,
     ratingsAverage: {
         type: Number,
-        default: 4.5,
+        default: 3.5,
         min: [1, "Lowest Rating exceeded"],
         max: [5, "Highest Rating exceeded"]
     }, 
@@ -22,13 +22,26 @@ const tourSchema = new mongoose.Schema({
         type: Number,
         required: [true, "Price must have a Tag"]
     },
+    priceDiscount: {
+        type: Number,
+        validate: {
+            validator: function(val){
+            return val < this.price
+        },
+            message: "Discount price is more than expected price"
+    }
+    },
     duration: {
         type: Number,
         default: 5
     },
     difficulty: {
         type: String,
-        required: [true, "Tour must have a difficulty"]
+        required: [true, "Tour must have a difficulty"],
+        enum: {
+            values: ["easy", "medium", "difficult"],
+            message: "Invalid difficulty selected"
+        }
     },
     summary: {
         type: String,
