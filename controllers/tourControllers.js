@@ -1,5 +1,4 @@
 // TOUR CONTROLLER FUNCTION
-const { aggregate } = require("./../model/tourModel");
 const Tour = require("./../model/tourModel")
 const APIFeatures = require("./../utils/apiFeatures")  // APIFEATURE CLASS
 

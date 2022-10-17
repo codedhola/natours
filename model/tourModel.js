@@ -6,13 +6,16 @@ const tourSchema = new mongoose.Schema({
     name: {
         type: String,
         unique: true,
-        required: [true, "Tour name must exist"]
-        
+        required: [true, "Tour name must exist"],
+        minLength: [10, "Name must have more than 10 character"],
+        maxLength: [40, "Name must not exceed 40 characters"]
     },
     slug: String,
     ratingsAverage: {
         type: Number,
-        default: 4.5
+        default: 4.5,
+        min: [1, "Lowest Rating exceeded"],
+        max: [5, "Highest Rating exceeded"]
     }, 
     ratingsQuantity: Number,
     price: {
@@ -69,7 +72,13 @@ tourSchema.pre("save", function(next) {
 tourSchema.pre(/^find/, function(next) {
     this.find({ secreteTour: { $ne: true}})
     next();
-})
+});
+
+// AGGREGATION MIDDLEWARE
+tourSchema.pre("aggregate", function(next){
+    this.pipeline().unshift({ $match: {secreteTour: { $ne: true } } })
+    next();
+});
 
 // ASSIGN SCHEMA TO MODEL
 const Tour = mongoose.model("Tour", tourSchema);
