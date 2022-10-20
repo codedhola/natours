@@ -150,6 +150,7 @@ const editTour = async (req, res) => {
         // EDIT DATA BASED ON GIVEN ID FROM USERS
         const tour = await Tour.findByIdAndUpdate(tourId, req.body, {
             new: true,
+            runValidators: true
         })
         res.status(200).json({
             status: "Successful",
