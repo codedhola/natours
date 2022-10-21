@@ -4,7 +4,7 @@ const app = express();
 const morgan = require("morgan");
 const tourRoutes = require("./routes/tourRoutes");
 const userRoutes = require("./routes/userRoutes");
-
+const AppError = require("./utils/appError");
 
 app.use(express.json()); // USE JSON MIDDLEWARE TO PARSE JSON DATA
 
