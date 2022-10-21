@@ -17,17 +17,19 @@ app.use("/api/v1/tours", tourRoutes);
 app.use("/api/v1/users", userRoutes);
 
 app.all("*", (req, res, next) => {
-    res.status(404).json({
-        status: "Not Found",
-        message: "This route is not available at the momment"
-    })
-    next();
+    const err = new Error(`Route ${req.originalUrl} can't be found on the server`);
+    err.statusCode = 404;
+    err.status = "fail";
+    next(err);
 });
 
-app.use("*", (error, req, res, next) => {
-    res.status(500).json({
-        status: "Server Error",
-        message: error
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const status = err.status || "Error";
+
+    res.status(statusCode).json({
+        status: status,
+        message: err.message
     })
     next();
 })
