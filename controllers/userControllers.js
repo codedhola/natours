@@ -1,5 +1,6 @@
 const User = require("./../model/userModel");
 const AppError = require("./../utils/appError")
+const jwt = require("jsonwebtoken");
 
 // USERS CONTROLLER FUNCTIONS
 const getAllUsers = async (req, res) => {
@@ -45,8 +46,11 @@ const authentication = async (req, res, next) => {
     try {
         const user = await User.create(req.body);
 
+        const token = await jwt.sign({id: user._id}, "secret", {expiresIn: "3d"})
+
         res.status(201).json({
             status: "Success",
+            token,
             data: user
 })
     }catch(err){
