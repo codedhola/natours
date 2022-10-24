@@ -1,6 +1,7 @@
 // TOUR CONTROLLER FUNCTION
 const Tour = require("./../model/tourModel")
 const APIFeatures = require("./../utils/apiFeatures")  // APIFEATURE CLASS
+const AppError = require("./../utils/appError");
 
 //const fileData = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`, "utf-8"));
 
@@ -120,26 +121,25 @@ const createTour = async (req, res) => {
     }catch(err){
         res.status(400).json({
             status: "error",
-            message: err.message
+            message: err
         })
     }
 };
 
-const getTourById = async (req, res) => {
+const getTourById = async (req, res, next) => {
     const tourId = req.params.id
     try{
         // SEARCH DATABASE BASED ON GIVEN ID
         const tour = await Tour.findById(tourId)
-        if(!tour) return res.status(404).json("Not found")
+        const err =  new AppError("Tour with given ID Not found", 404)
+        if(!tour) return next(err);
         res.status(200).json({
             status: "Sucessful",
             data: tour
         })
     }catch(err){
-        res.status(400).json({
-            status: "Failed",
-            message: err.message
-        })
+        const error =  new AppError(err, 400)
+        next(error);
     }
 
 }
@@ -152,6 +152,7 @@ const editTour = async (req, res) => {
             new: true,
             runValidators: true
         })
+        if(!tour) return res.status(404).json({status: "Failed", message: "Tour with given ID not Found"});
         res.status(200).json({
             status: "Successful",
             message: tour
@@ -168,7 +169,8 @@ const deleteTour = async (req, res) => {
     try{
         // DELETE DATA BASED ON ID FROM USERS
         const tourId = req.params.id;
-        await Tour.findByIdAndDelete(tourId);
+        const tour = await Tour.findByIdAndDelete(tourId);
+        if(!tour) return res.status(404).json({status: "Failed", message: "Tour with given ID not Found"});
         res.status(204).json()
     }catch(err){
         res.status(400).json({

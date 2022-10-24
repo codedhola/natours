@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const tourRoutes = require("./routes/tourRoutes");
 const userRoutes = require("./routes/userRoutes");
 const AppError = require("./utils/appError");
+const errorHandler = require("./controllers/errorController")
 
 app.use(express.json()); // USE JSON MIDDLEWARE TO PARSE JSON DATA
 
@@ -25,15 +26,6 @@ app.all("*", (req, res, next) => {
     // err.status = "fail";
 });
 
-app.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    const status = err.status || "Error";
-
-    res.status(statusCode).json({
-        status: status,
-        message: err.message
-    })
-    next();
-})
+app.use(errorHandler)
 
 module.exports = app;
