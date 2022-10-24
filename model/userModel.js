@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -12,7 +13,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function(val){
-                return val.match()
+                return val.match(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/i);
             },
             message: "Email must be a valid email"
         },
@@ -23,13 +24,28 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minlength: 10,
+        select: false
     },
     confirmPassword: {
         type: String,
-        required: true
+        required: true,
+        validate: {
+            validator: function(val){
+                return this.password === val;
+            },
+            message: "Password must Match"
+        }
     }
     
+});
+
+userSchema.pre("save", async function(next){
+    this.password = await bcrypt.hash(this.password, 10);
+
+    this.confirmPassword = undefined;
+    next();
 })
 
 const User = mongoose.model("User", userSchema);
