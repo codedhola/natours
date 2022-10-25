@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const { getAllTours, createTour, getTourById, editTour, deleteTour, topBest, getTourStats, getMonthlyPlan} = require("../controllers/tourControllers");
+const {protect} = require("./../controllers/authController");
 
 // PARAM MIDDLE-WARE FOR ID;
 
 // GET ALL TOUR
-router.get("/", getAllTours);
+router.get("/", protect, getAllTours);
 
 // ALIAS TOP BEST ROUTE 
 router.get("/top-best", topBest, getAllTours);
