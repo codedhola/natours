@@ -41,17 +41,20 @@ const userSchema = new mongoose.Schema({
     changePasswordAt: Date
 });
 
+// HASH PASSWORD BEFORE SAVING TO DATABASE
 userSchema.pre("save", async function(next){
     this.password = await bcrypt.hash(this.password, 10);
 
-    this.confirmPassword = undefined;
+    this.confirmPassword = undefined; // CANCEL FROM STORING IN DATABASE
     next();
 })
 
+// USER METHOD TO VALIDATE USERS PASSWORD WHEN LOGGING IN
 userSchema.methods.validateUser = async function(userPass, dbPass){
     return bcrypt.compare(userPass, dbPass);
 }
 
+// USER METHOD TO CHECK IF PASSWORD HAS BEEN CHANGED
 userSchema.methods.checkPass = async function(jwtTimeStamp){
     if(this.changePasswordAt){
         const changeStamp = parseInt(this.changePasswordAt.getTime() / 1000);

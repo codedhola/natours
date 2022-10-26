@@ -18,8 +18,10 @@ router.patch("/:id", editUser);
 // DELETE A USER BY ID
 router.delete("/:id", deleteUser);
 
+// SIGNUP A USER
 router.post("/signup", signUp);
 
+// LOGIN USER
 router.post("/login", login);
 
 module.exports = router;
