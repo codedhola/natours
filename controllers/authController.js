@@ -4,7 +4,7 @@ const User = require("./../model/userModel");
 const AppError = require("./../utils/appError");
 
 const signToken = id => {
-    return jwt.sign({id: id}, process.env.JWT_SECRET, {expiresIn: "25000"});
+    return jwt.sign({id: id}, process.env.JWT_SECRET, {expiresIn: "1h"});
 }
 
 const signUp = async (req, res, next) => {
@@ -62,15 +62,17 @@ const protect = async (req, res, next) => {
     try {
         const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
         
-    // CHECK IF JWT IS A VALID USER ID SIGNATURE
-    const user = await User.findById(decoded._id);
-    if(!user) return next(new AppError("User ID Incorrect"));
+        // CHECK IF JWT IS A VALID USER ID SIGNATURE
+        const user = await User.findById(decoded.id);
+
+        
+    if(!user) return next(new AppError("User ID Incorrect", 401));
 
     // CHECK PASSWORD CHANGED
-    if(user.checkPass(decoded.iat)) return next(new AppError("User Password has been changed", 401));
+    if(!user.checkPass(decoded.iat)) return next(new AppError("User Password has been changed", 401));
 
     req.user = user;
-    
+
     next();
     }catch(err){
         next(new AppError(err, 401))
