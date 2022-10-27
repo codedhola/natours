@@ -38,6 +38,11 @@ const userSchema = new mongoose.Schema({
             message: "Password must Match"
         }
     },
+    role: {
+        type: String,
+        enum: ["user", "guide", "lead", "admin"],
+        default: "user"
+    },
     changePasswordAt: Date
 });
 
