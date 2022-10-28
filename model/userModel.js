@@ -45,15 +45,14 @@ const userSchema = new mongoose.Schema({
         default: "user"
     },
     changePasswordAt: Date,
-    passwordResetToken: {
-        type: String,
-        default: "i"
-    },
+    passwordResetToken: String,
     passwordResetTimer: Date
 });
 
 // HASH PASSWORD BEFORE SAVING TO DATABASE
 userSchema.pre("save", async function(next){
+    if(!this.isModified("password")) return next();
+
     this.password = await bcrypt.hash(this.password, 10);
 
     this.confirmPassword = undefined; // CANCEL FROM STORING IN DATABASE
@@ -80,6 +79,7 @@ userSchema.methods.createPasswordResetToken = function(){
 
     this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
 
+    console.log(resetToken, this.passwordResetToken);
     this.passwordResetTimer = Date.now() + 10 * 60 * 1000;
 
     return resetToken;

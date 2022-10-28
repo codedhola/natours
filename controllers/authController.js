@@ -103,6 +103,7 @@ const forgotPassword = async (req, res, next) => {
     
         const resetToken = user.createPasswordResetToken();
         console.log(resetToken)
+
         await user.save({ validateBeforeSave: false });
         res.status(200).json({
             status: "Successful"
