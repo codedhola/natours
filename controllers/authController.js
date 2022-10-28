@@ -95,9 +95,33 @@ const restrictions = (...roles) => {
         next();
     }
 }
+
+const forgotPassword = async (req, res, next) => {
+    const user = await User.findOne({email: req.body.email});
+    try{
+        if(!user) return next(new AppError("No user with the provided Email Address", 404));
+    
+        const resetToken = user.createPasswordResetToken();
+        console.log(resetToken)
+        await user.save({ validateBeforeSave: false });
+        res.status(200).json({
+            status: "Successful"
+        })
+        
+    }catch(err){
+        next(new AppError(err, 500));
+    }
+}
+
+const resetPassword = (req, res, next) => {
+
+}
+
 module.exports = {
     signUp,
     login,
     protect,
-    restrictions
+    restrictions,
+    forgotPassword,
+    resetPassword
 }
