@@ -2,6 +2,7 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("./../model/userModel");
 const AppError = require("./../utils/appError");
+const sendEmail = require("./../utils/mailTo");
 
 // SIGN JWT TOKEN BY USER ID
 const signToken = id => {
@@ -102,9 +103,18 @@ const forgotPassword = async (req, res, next) => {
         if(!user) return next(new AppError("No user with the provided Email Address", 404));
     
         const resetToken = user.createPasswordResetToken();
-        console.log(resetToken)
 
         await user.save({ validateBeforeSave: false });
+
+        const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/users/resetpassword/${resetToken}`;
+        console.log(resetUrl);
+
+        const message = `follow: ${resetUrl} to change password in 10mins before it expires`;
+        await sendEmail({
+            email: user.email,
+            subject: "Reset Password request",
+            message: message
+        })
         res.status(200).json({
             status: "Successful"
         })
