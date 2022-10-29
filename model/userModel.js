@@ -59,6 +59,12 @@ userSchema.pre("save", async function(next){
     next();
 })
 
+userSchema.pre("save", async function(next){
+    if(!this.isModified("password") || this.isNew) return next();
+    this.changePasswordAt = Date.now() - 1000;
+    next();
+})
+
 // USER METHOD TO VALIDATE USERS PASSWORD WHEN LOGGING IN
 userSchema.methods.validateUser = async function(userPass, dbPass){
     return bcrypt.compare(userPass, dbPass);
