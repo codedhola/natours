@@ -110,14 +110,23 @@ const forgotPassword = async (req, res, next) => {
         console.log(resetUrl);
 
         const message = `follow: ${resetUrl} to change password in 10mins before it expires`;
-        await sendEmail({
-            email: user.email,
-            subject: "Reset Password request",
-            message: message
-        })
-        res.status(200).json({
-            status: "Successful"
-        })
+        try{
+            await sendEmail({
+                email: user.email,
+                subject: "Reset Password request",
+                message: message
+            })
+            res.status(200).json({
+                status: "Successful"
+            })
+
+        }catch(err){
+            user.passwordResetToken = undefined;
+            user.passwordResetTimer = undefined;
+            await user.save({ validateBeforeSave: false});
+
+            return next(new AppError("There was a problem resetting the password. please try again later"));
+        }
         
     }catch(err){
         next(new AppError(err, 500));
