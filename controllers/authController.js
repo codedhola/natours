@@ -6,6 +6,7 @@ const AppError = require("./../utils/appError");
 const sendEmail = require("./../utils/mailTo");
 
 
+
 // SIGN JWT TOKEN BY USER ID
 const signToken = id => {
     return jwt.sign({id: id}, process.env.JWT_SECRET, {expiresIn: "1h"});
@@ -161,11 +162,43 @@ const resetPassword = async (req, res, next) => {
     }
 }
 
+const updatePassword = async (req, res, next) => {
+    // user input
+    const { oldPass, password, confirmPassword } = req.body;
+     
+    if(!oldPass || !password || !confirmPassword) return next(new AppError("Please enter required field", 400));
+
+    const userDetails = req.user;  // GET LOGGED IN USER DETAILS
+    try {
+        const user = await User.findById(userDetails._id).select("+password");
+        
+        const compare = await user.validateUser(oldPass, user.password); 
+        
+        if(!compare) return next(new AppError("Your old password is not correct", 401));
+        
+        user.password = password;
+        user.confirmPassword = confirmPassword;
+        const token = signToken(user._id); // SIGN JWT TOKEN FOR USER
+        
+        await user.save({ runValidator: true})
+        //console.log(confirmPasskey);
+        res.status(200).json({
+            status: "Successful",
+            token
+        })
+
+    }catch(err){
+        next(new AppError(err, 400));
+    }
+
+}
+
 module.exports = {
     signUp,
     login,
     protect,
     restrictions,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    updatePassword
 }
