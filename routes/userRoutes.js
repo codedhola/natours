@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getAllUsers, createUser, getUserById, editUser, deleteUser } = require("../controllers/userControllers");
+const { getAllUsers, createUser, getUserById, editUser, deleteUser, updateUserProfile } = require("../controllers/userControllers");
 const { signUp, login, forgotPassword, resetPassword, updatePassword } = require("../controllers/authController");
 const { protect, restrictions } = require("./../controllers/authController");
 
@@ -33,5 +33,8 @@ router.patch("/resetPassword/:token", resetPassword);
 
 // UPDATE PASSWORD
 router.patch("/auth/updatepassword", protect , updatePassword);
+
+// UPDATE USER DETAILS
+router.patch("/auth/updateprofile", protect, updateUserProfile );
 
 module.exports = router;
