@@ -57,6 +57,19 @@ const deleteUser = async (req, res, next) => {
 
 const updateUserProfile = async (req, res, next) => {
     
+
+
+    try{
+        const user = await User.findByIdAndUpdate(req.user._id, req.body, { runValidators: true, new: true });
+    
+        res.status(200).json({
+            status: "success",
+            message: user
+        })
+
+    }catch(err){
+        next(new AppError("An Error occured updating  your profile...", 403));
+    }
 }
 
 module.exports = {
