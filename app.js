@@ -9,7 +9,7 @@ const errorHandler = require("./controllers/errorController")
 
 app.use(express.json()); // USE JSON MIDDLEWARE TO PARSE JSON DATA
 
-if(process.env.NODE_ENV){
+if(process.env.NODE_ENV === "development"){
     app.use(morgan("dev"));
 }
 
@@ -25,6 +25,7 @@ app.all("*", (req, res, next) => {
     // err.statusCode = 404;
     // err.status = "fail";
 });
+console.log(process.env.NODE_ENV)
 
 app.use(errorHandler)
 

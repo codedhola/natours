@@ -20,16 +20,16 @@ router.patch("/:id", editUser);
 router.delete("/:id",protect, restrictions("admin", "lead"), deleteUser);
 
 // SIGNUP A USER
-router.post("/signup", signUp);
+router.post("auth/signup", signUp);
 
 // LOGIN USER
-router.post("/login", login);
+router.post("auth/login", login);
 
 // FORGOT PASSWORD
-router.post("/forgotPassword", forgotPassword);
+router.post("auth/forgotPassword", forgotPassword);
 
 // RESET PASSWORD
-router.patch("/resetPassword/:token", resetPassword);
+router.patch("auth/resetPassword/:token", resetPassword);
 
 // UPDATE PASSWORD
 router.patch("/auth/updatepassword", protect , updatePassword);
