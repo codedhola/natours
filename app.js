@@ -24,8 +24,7 @@ app.all("*", (req, res, next) => {
     // const err = new Error(`Route ${req.originalUrl} can't be found on the server`);
     // err.statusCode = 404;
     // err.status = "fail";
-});
-console.log(process.env.NODE_ENV)
+})
 
 app.use(errorHandler)
 

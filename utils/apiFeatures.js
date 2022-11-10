@@ -13,7 +13,6 @@ class APIFeatures {
         let queryStr = JSON.stringify(queryObj)
         queryStr = queryStr.replace(/\b(gt|gte|lte|lt)\b/g, arg => `$${arg}`) //CORRESPOND QUERY TO MONGODB
 
-        console.log(queryStr)
         // SEARCH OR QUERY(IF FOUND) IN DATABASE
         this.Query = this.Query.find(JSON.parse(queryStr))
         return this;

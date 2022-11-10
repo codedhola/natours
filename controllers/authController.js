@@ -110,7 +110,6 @@ const forgotPassword = async (req, res, next) => {
         await user.save({ validateBeforeSave: false });
 
         const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/users/resetpassword/${resetToken}`;
-        console.log(resetUrl);
 
         const message = `follow: ${resetUrl} to change password in 10mins before it expires`;
         try{

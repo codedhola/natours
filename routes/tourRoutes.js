@@ -12,6 +12,7 @@ router.get("/top-best", topBest, getAllTours);
 // GET ALL TOUR STATS
 router.get("/tour-stats", getTourStats);
 
+// GET MONTHLY PLANS DETAILS
 router.get("/tour-stats/:year", getMonthlyPlan);
 
 // CREATE A TOUR
