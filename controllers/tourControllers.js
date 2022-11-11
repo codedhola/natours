@@ -74,7 +74,7 @@ const topBest = async (req, res, next) => {
     next();
 }
 
-const createTour = async (req, res) => {
+const createTour = async (req, res, next) => {
     // GET DATA FROM USERS
     const body = req.body;
     try{
@@ -87,10 +87,8 @@ const createTour = async (req, res) => {
             }
         });
     }catch(err){
-        res.status(400).json({
-            status: "error",
-            message: err
-        })
+        const error = new AppError(err, 400);
+        next(error);
     }
 };
 
@@ -99,7 +97,7 @@ const getTourById = async (req, res, next) => {
     try{
         // SEARCH DATABASE BASED ON GIVEN ID
         const tour = await Tour.findById(tourId)
-        const err =  new AppError("Tour with given ID Not found", 404)
+        const err =  new AppError(`Tour with ID ${tourId} Not found`, 404)
         if(!tour) return next(err);
         res.status(200).json({
             status: "Sucessful",
@@ -120,7 +118,7 @@ const editTour = async (req, res) => {
             new: true,
             runValidators: true
         })
-        if(!tour) return res.status(404).json({status: "Failed", message: "Tour with given ID not Found"});
+        if(!tour) return next(new AppError(`Tour with id ${tourId} not Found`, 404))
         res.status(200).json({
             status: "Successful",
             message: tour
