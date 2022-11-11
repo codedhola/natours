@@ -48,10 +48,8 @@ const deleteUser = async (req, res, next) => {
 
     }catch(err){
 
-        res.status(500).send({
-            status: "Failed",
-            message: "Couldn't delete user"
-        });
+        const error =  new AppError(err, err.statusCode)
+        next(error);
     }
 }
 

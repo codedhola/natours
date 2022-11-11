@@ -3,38 +3,6 @@ const Tour = require("./../model/tourModel")
 const APIFeatures = require("./../utils/apiFeatures")  // APIFEATURE CLASS
 const AppError = require("./../utils/appError");
 
-//const fileData = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`, "utf-8"));
-
-
-// const checkId = (req, res, next, val) => {
-//     const tour = fileData.find(el => el.id == val);
-//     //  TOUR RECEIVES A PARTICULAR ID TOUR
-//     if(!tour){
-//         return res.status(404).send({
-//             status: "unsuccessful",
-//             message: "couldn't find the tour with the given id"
-//         })
-//     }
-//     console.log(val)
-//     next();
-// }
-
-
-
-// const checkBody = (req, res, next) => {
-//     const {name, difficulty, price} = req.body;
-//     if(!name || !difficulty || !price){
-//         return res.status(400).json({
-//             Status: "Bad request",
-//             message: "request incoming not completely validated"
-//         });
-//     }
-//     const body = {name , difficulty, price}
-//     console.log(body);
-//     next();
-// }
-
-
 const getAllTours = async (req, res) => {
     try {
         // QUERYING
@@ -158,10 +126,8 @@ const editTour = async (req, res) => {
             message: tour
         })
     }catch(err){
-        res.status(400).json({
-            status: "Failed",
-            message: err.message
-        })
+        const error =  new AppError(err, 400)
+        next(error);
     }
 };
 
@@ -173,10 +139,8 @@ const deleteTour = async (req, res) => {
         if(!tour) return res.status(404).json({status: "Failed", message: "Tour with given ID not Found"});
         res.status(204).json()
     }catch(err){
-        res.status(400).json({
-            status: "Failed",
-            message: err.message
-        })
+        const error =  new AppError(err, 400)
+        next(error);
     }
 
 };
@@ -210,10 +174,8 @@ const getTourStats = async (req, res) => {
             data: stats
         })
     }catch(err){
-        res.status(400).json({
-            status: "Failed",
-            message: err.message
-        })
+        const error =  new AppError(err, 400)
+        next(error);
     }
     
 }
@@ -269,10 +231,8 @@ const getMonthlyPlan = async (req, res) => {
         })
 
     }catch(err){
-        res.status(400).json({
-            status: "Fail",
-            message: err.message
-        })
+        const error =  new AppError(err, 400)
+        next(error);
     }
 }
 
