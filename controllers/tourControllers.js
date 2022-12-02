@@ -4,7 +4,6 @@ const APIFeatures = require("./../utils/apiFeatures")  // APIFEATURE CLASS
 const AppError = require("./../utils/appError")
 const catchAsync = require("./../utils/asyncHandler")
 
-
 const getAllTours = catchAsync(async (req, res) => {
         // QUERYING
         // const queryObj = {...req.query};
