@@ -10,15 +10,6 @@ router.get("/", getAllUsers);
 // CREATE A USER
 router.post("/", createUser);
 
-// GET A USER BY ID
-router.get("/:id", getUserById);
-
-// EDIT A USER BY ID
-router.patch("/:id", editUser);
-
-// DELETE A USER BY ID
-router.delete("/:id",protect, restrictions("admin", "lead"), deleteUser);
-
 // SIGNUP A USER
 router.post("auth/signup", signUp);
 
@@ -37,4 +28,12 @@ router.patch("/auth/updatepassword", protect , updatePassword);
 // UPDATE USER DETAILS
 router.patch("/auth/updateprofile", protect, updateUserProfile );
 
+// GET A USER BY ID
+router.get("/:id", getUserById);
+
+// EDIT A USER BY ID
+router.patch("/:id", editUser);
+
+// DELETE A USER BY ID
+router.delete("/:id",protect, restrictions("admin", "lead"), deleteUser);
 module.exports = router;

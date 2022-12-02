@@ -96,7 +96,7 @@ const getTourById = async (req, res, next) => {
     const tourId = req.params.id
     try{
         // SEARCH DATABASE BASED ON GIVEN ID
-        const tour = await Tour.findById(tourId)
+        const tour = await Tour.findById(tourId).select("-__v")
         const err =  new AppError(`Tour with ID ${tourId} Not found`, 404)
         if(!tour) return next(err);
         res.status(200).json({
@@ -182,7 +182,6 @@ const getTourStats = async (req, res) => {
 const getMonthlyPlan = async (req, res) => {
     try {
         const year = req.params.year * 1;
-        console.log(new Date(`${year}-01-01`))
         const plan = await Tour.aggregate([
             {
                 $unwind: "$startDates"
