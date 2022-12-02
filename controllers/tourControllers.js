@@ -1,10 +1,11 @@
 // TOUR CONTROLLER FUNCTION
 const Tour = require("./../model/tourModel")
 const APIFeatures = require("./../utils/apiFeatures")  // APIFEATURE CLASS
-const AppError = require("./../utils/appError");
+const AppError = require("./../utils/appError")
+const catchAsync = require("./../utils/asyncHandler")
 
-const getAllTours = async (req, res) => {
-    try {
+
+const getAllTours = catchAsync(async (req, res) => {
         // QUERYING
         // const queryObj = {...req.query};
         // let excludeFields = ["page", "sort", "limit", "fields"]
@@ -58,26 +59,18 @@ const getAllTours = async (req, res) => {
                 tours: tour
             }
         })
-    }catch(err){ // FAILURE
-        res.status(400).json({
-            status: "Failure",
-            message: err.message
-        })
-    }
-    
-}
+});
 
-const topBest = async (req, res, next) => {
+const topBest = catchAsync(async (req, res, next) => {
     req.query.limit = "5";
     req.query.sort = "-price,ratingsAverage";
     req.query.fields = "name,price,summary,difficulty,ratingsAverage";
     next();
-}
+})
 
-const createTour = async (req, res, next) => {
+const createTour = catchAsync(async (req, res, next) => {
     // GET DATA FROM USERS
     const body = req.body;
-    try{
         // PARSE DATA TO DATABASE
         const newTour = await Tour.create(body);
         res.status(201).json({
@@ -86,15 +79,10 @@ const createTour = async (req, res, next) => {
                 doc: newTour
             }
         });
-    }catch(err){
-        const error = new AppError(err, 400);
-        next(error);
-    }
-};
+});
 
-const getTourById = async (req, res, next) => {
+const getTourById = catchAsync(async (req, res, next) => {
     const tourId = req.params.id
-    try{
         // SEARCH DATABASE BASED ON GIVEN ID
         const tour = await Tour.findById(tourId).select("-__v")
         const err =  new AppError(`Tour with ID ${tourId} Not found`, 404)
@@ -103,16 +91,10 @@ const getTourById = async (req, res, next) => {
             status: "Sucessful",
             data: tour
         })
-    }catch(err){
-        const error =  new AppError(err, 400)
-        next(error);
-    }
+})
 
-}
-
-const editTour = async (req, res) => {
-    const tourId = req.params.id;
-    try{
+const editTour = catchAsync(async (req, res) => {
+    const tourId = req.params.id
         // EDIT DATA BASED ON GIVEN ID FROM USERS
         const tour = await Tour.findByIdAndUpdate(tourId, req.body, {
             new: true,
@@ -123,28 +105,17 @@ const editTour = async (req, res) => {
             status: "Successful",
             message: tour
         })
-    }catch(err){
-        const error =  new AppError(err, 400)
-        next(error);
-    }
-};
+})
 
-const deleteTour = async (req, res) => {
-    try{
+const deleteTour = catchAsync(async (req, res) => {
         // DELETE DATA BASED ON ID FROM USERS
         const tourId = req.params.id;
         const tour = await Tour.findByIdAndDelete(tourId);
         if(!tour) return res.status(404).json({status: "Failed", message: "Tour with given ID not Found"});
         res.status(204).json()
-    }catch(err){
-        const error =  new AppError(err, 400)
-        next(error);
-    }
+})
 
-};
-
-const getTourStats = async (req, res) => {
-    try {
+const getTourStats = catchAsync(async (req, res) => {
         const stats = await Tour.aggregate([
             {
                 $match: { ratingsAverage: {$gte: 4.5}}
@@ -171,16 +142,10 @@ const getTourStats = async (req, res) => {
             results: stats.length,
             data: stats
         })
-    }catch(err){
-        const error =  new AppError(err, 400)
-        next(error);
-    }
-    
-}
+})
 
 
-const getMonthlyPlan = async (req, res) => {
-    try {
+const getMonthlyPlan = catchAsync(async (req, res) => {
         const year = req.params.year * 1;
         const plan = await Tour.aggregate([
             {
@@ -226,12 +191,7 @@ const getMonthlyPlan = async (req, res) => {
                 plan
             }
         })
-
-    }catch(err){
-        const error =  new AppError(err, 400)
-        next(error);
-    }
-}
+})
 
 // EXPORT ALL CONTROLLER FUNCTION 
 module.exports = {
