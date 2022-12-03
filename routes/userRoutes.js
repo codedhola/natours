@@ -11,16 +11,16 @@ router.get("/", getAllUsers);
 router.post("/", createUser);
 
 // SIGNUP A USER
-router.post("auth/signup", signUp);
+router.post("/auth/signup", signUp);
 
 // LOGIN USER
-router.post("auth/login", login);
+router.post("/auth/login", login);
 
 // FORGOT PASSWORD
-router.post("auth/forgotPassword", forgotPassword);
+router.post("/auth/forgotPassword", forgotPassword);
 
 // RESET PASSWORD
-router.patch("auth/resetPassword/:token", resetPassword);
+router.patch("/auth/resetPassword/:token", resetPassword);
 
 // UPDATE PASSWORD
 router.patch("/auth/updatepassword", protect , updatePassword);
