@@ -1,5 +1,22 @@
 const AppError = require("../utils/appError")
 
+
+function handleCastError(err){
+    const message = `invalid ${err.path}: ${err.value}`
+    return new AppError(message, 400)
+}
+
+function handleDuplicateError(err){
+    const message = `Key ${err.keyValue.name}: already exist in database`
+    return new AppError(message, 400)
+}
+
+function handleValidationError(err){
+    const values = Object.values(err.errors).map(el => el.message)
+    const message = values.join(". ")
+    return new AppError(message, 400)
+}
+
 const development = (err, res) => {
     res.status(err.statusCode).json({
         status: err.status,
@@ -25,11 +42,6 @@ const production = (err, res) => {
     }
 }
 
-function handleCastError(err){
-    const message = `invalid ${err.path}: ${err.value}`
-    return new AppError(message, 400)
-}
-
 
 module.exports = (err, req, res, next) => {
      err.statusCode = err.statusCode || 500;
@@ -39,7 +51,10 @@ module.exports = (err, req, res, next) => {
         development(err, res)
     }else {
         let error = {...err}
-        if(error.name = "CastError") error = handleCastError(err)
+        if(error.name === "CastError"){ error = handleCastError(error) }
+        if(error.code === 11000) { error = handleDuplicateError(error) }
+        if(error.errors) { error = handleValidationError(error) }
+
         production(error, res)
     }      
 }
