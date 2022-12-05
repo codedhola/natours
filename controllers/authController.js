@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("./../model/userModel");
 const AppError = require("./../utils/appError");
 const sendEmail = require("./../utils/mailTo");
-
+const asyncHandler = require("./../utils/asyncHandler")
 
 
 // SIGN JWT TOKEN BY USER ID
@@ -13,8 +13,7 @@ const signToken = id => {
 }
 
 // SIGNUP PROCESS
-const signUp = async (req, res, next) => {
-    try {
+const signUp = asyncHandler(async (req, res, next) => {
         const user = await User.create(req.body); // CREATE USER
 
         const token = signToken(user._id);  // TOKEN SIGNED BY USER ID 
@@ -23,17 +22,11 @@ const signUp = async (req, res, next) => {
             status: "Success",
             token,
             data: user
-})
-    }catch(err){
-        res.status(400).json({
-            status: "failed",
-            message: err.message
         })
-    }
-}
+})
 
 // LOGIN PROCESS
-const login = async (req, res, next) => {
+const login = asyncHandler(async (req, res, next) => {
     const { email, password } = req.body;   // RECEIVE USER EMAIL AND PASSWORD
 
     // VALIDATE IF EMAIL AND PASSWORD EXITS
@@ -41,7 +34,6 @@ const login = async (req, res, next) => {
         return next(new AppError("Provide a valid Email and Password", 400));
     }
 
-    try {
         const user = await User.findOne({email}).select("+password");   // CHECK EMAIL FROM DATABASE
 
         //  AND CHECK IF PASSWORD VALIDATE FROM USER SCHEMA METHOD
@@ -54,14 +46,10 @@ const login = async (req, res, next) => {
             status: "Success",
             token,
         })
-        
-    }catch(err){
-        next(err);
-    }
-}
+})
 
 // PROTECT ROUTES: AUTHORIZATION
-const protect = async (req, res, next) => {
+const protect = asyncHandler(async (req, res, next) => {
     let token;
 
     // SEARCH FOR TOKEN FROM REQUEST
@@ -70,7 +58,6 @@ const protect = async (req, res, next) => {
     }
     //  CHECK IF TOKEN IS AVAILABLE
     if(!token) return next(new AppError("You are not logged in", 401));
-    try {
         // CHECK IF JWT TOKEN IS VALID 
         const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
         
@@ -86,10 +73,7 @@ const protect = async (req, res, next) => {
     req.user = user;
 
     next();
-    }catch(err){
-        next(new AppError(err, 401))
-    }
-}
+})
 
 const restrictions = (...roles) => { 
     return (req, res, next) => {
@@ -100,9 +84,8 @@ const restrictions = (...roles) => {
     }
 }
 
-const forgotPassword = async (req, res, next) => {
-    const user = await User.findOne({email: req.body.email});
-    try{
+const forgotPassword = asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({email: req.body.email})
         if(!user) return next(new AppError("No user with the provided Email Address", 404));
     
         const resetToken = user.createPasswordResetToken();
@@ -129,17 +112,10 @@ const forgotPassword = async (req, res, next) => {
 
             return next(new AppError("There was a problem resetting the password. please try again later"));
         }
-        
-    }catch(err){
-        next(new AppError(err, 500));
-    }
-}
+})
 
-const resetPassword = async (req, res, next) => {
+const resetPassword = asyncHandler(async (req, res, next) => {
     const hashedToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
-
-    try{
-        
         const user = await User.findOne({passwordResetToken: hashedToken, passwordResetTimer: { $gt: Date.now() }})
     
         if(!user) return next(new AppError("Token is invalid or Expired", 400));
@@ -156,19 +132,15 @@ const resetPassword = async (req, res, next) => {
             message: "Successful",
             token
         })
-    }catch(err){
-        next(new AppError(err, 500));
-    }
-}
+})
 
-const updatePassword = async (req, res, next) => {
+const updatePassword = asyncHandler(async (req, res, next) => {
     // user input
     const { oldPass, password, confirmPassword } = req.body;
      
     if(!oldPass || !password || !confirmPassword) return next(new AppError("Please enter required field", 400));
 
     const userDetails = req.user;  // GET LOGGED IN USER DETAILS
-    try {
         const user = await User.findById(userDetails._id).select("+password");
         
         const compare = await user.validateUser(oldPass, user.password); 
@@ -185,12 +157,7 @@ const updatePassword = async (req, res, next) => {
             status: "Successful",
             token
         })
-
-    }catch(err){
-        next(new AppError(err, 400));
-    }
-
-}
+})
 
 module.exports = {
     signUp,

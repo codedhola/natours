@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
             validator: function(val){
                 return this.password === val;
             },
-            message: "Password must Match"
+            message: "Password doesn't Match confirm password"
         }
     },
     role: {
