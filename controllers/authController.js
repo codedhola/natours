@@ -75,6 +75,7 @@ const protect = asyncHandler(async (req, res, next) => {
     next();
 })
 
+// RESTRICT ROLES OF USERS
 const restrictions = (...roles) => { 
     return (req, res, next) => {
         if(!roles.includes(req.user.role)){
@@ -84,18 +85,19 @@ const restrictions = (...roles) => {
     }
 }
 
+// FORGOT PASSWORD FUNCTIONALITY
 const forgotPassword = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({email: req.body.email})
-        if(!user) return next(new AppError("No user with the provided Email Address", 404));
+        if(!user) return next(new AppError("No user with the provided Email Address", 404)); // VALIDATE USER EXISTENCE
     
-        const resetToken = user.createPasswordResetToken();
+        const resetToken = user.createPasswordResetToken(); // CREATE TOKEN
 
         await user.save({ validateBeforeSave: false });
 
         const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/users/resetpassword/${resetToken}`;
 
         const message = `follow: ${resetUrl} to change password in 10mins before it expires`;
-        try{
+        try{ // SEND TOKEN TO USER THROUGH EMAIL
             await sendEmail({
                 email: user.email,
                 subject: "Reset Password request",
@@ -106,6 +108,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
             })
 
         }catch(err){
+            // RESET ALL IF AN ERROR OCCURED
             user.passwordResetToken = undefined;
             user.passwordResetTimer = undefined;
             await user.save({ validateBeforeSave: false});
@@ -114,11 +117,12 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
         }
 })
 
+// RESET PASSWORD FUNCTIONALITY
 const resetPassword = asyncHandler(async (req, res, next) => {
-    const hashedToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
+    const hashedToken = crypto.createHash("sha256").update(req.params.token).digest("hex"); // CREATE HASH FOR PASS
         const user = await User.findOne({passwordResetToken: hashedToken, passwordResetTimer: { $gt: Date.now() }})
     
-        if(!user) return next(new AppError("Token is invalid or Expired", 400));
+        if(!user) return next(new AppError("Token is invalid or Expired", 400)); // CONFIRM IF TOKEN EXIST IN DATABASE
     
         user.password = req.body.password;
         user.confirmPassword = req.body.confirmPassword;
@@ -134,6 +138,7 @@ const resetPassword = asyncHandler(async (req, res, next) => {
         })
 })
 
+// UPDATE USER PASSWORD WHILE LOGGED IN
 const updatePassword = asyncHandler(async (req, res, next) => {
     // user input
     const { oldPass, password, confirmPassword } = req.body;
