@@ -27,7 +27,7 @@ const createUser = (req, res) => {
     });
 }
 
-// EDIT USER PRIVILEGE
+// EDIT USER: ADMIN PRIVILEGE
 const editUser = (req, res) => {
     res.status(500).send({
         status: "Failed",
@@ -35,7 +35,7 @@ const editUser = (req, res) => {
     });
 }
 
-// DELETE A USER
+// DELETE A USER: ADMIN PRIVILEGE
 const deleteUser = asyncHandler(async (req, res, next) => {
     const id = req.params.id;
        const user = await User.findByIdAndDelete(id);
@@ -47,6 +47,7 @@ const deleteUser = asyncHandler(async (req, res, next) => {
         })
 })
 
+// UDPATE USER PROFILE 
 const updateUserProfile = asyncHandler(async (req, res, next) => {
         const user = await User.findByIdAndUpdate(req.user._id, req.body, { runValidators: true, new: true });
     
