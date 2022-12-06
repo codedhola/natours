@@ -65,7 +65,7 @@ const protect = asyncHandler(async (req, res, next) => {
         const user = await User.findById(decoded.id);
 
         
-    if(!user) return next(new AppError("User ID Incorrect", 401)); // ERROR IF INVALID USER
+    if(!user) return next(new AppError("User Do not longer exist", 401)); // ERROR IF INVALID USER
 
     // CHECK IF PASSWORD IS CHANGED
     if(!user.checkPass(decoded.iat)) return next(new AppError("User Password has been changed", 401));
@@ -150,7 +150,7 @@ const updatePassword = asyncHandler(async (req, res, next) => {
         
         const compare = await user.validateUser(oldPass, user.password); 
         
-        if(!compare) return next(new AppError("Your old password is not correct", 401));
+        if(!compare) return next(new AppError("Your old password is not correct", 400));
         
         user.password = password;
         user.confirmPassword = confirmPassword;

@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/codedhola/natours/issues"
   },
-  "homepage": "https://github.com/codedhola/natours#readme",
+  "homepage": "https://github.com/codedhola/natours",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.3",

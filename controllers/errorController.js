@@ -1,6 +1,5 @@
 const AppError = require("../utils/appError")
 
-
 function handleCastError(err){
     const message = `invalid ${err.path}: ${err.value}`
     return new AppError(message, 400)
@@ -25,6 +24,7 @@ function handleJwtExpires(){
     return new AppError("Login Token Expired, please login again", 401)
 }
 
+// ERROR VIEWS FOR DEVELOPMENT
 const development = (err, res) => {
     res.status(err.statusCode).json({
         status: err.status,
@@ -34,6 +34,7 @@ const development = (err, res) => {
     })
 }
 
+// ERROR VIEWS FOR PRODUCTION
 const production = (err, res) => {
     if(err.isOperational){
         res.status(err.statusCode).json({
@@ -50,14 +51,15 @@ const production = (err, res) => {
     }
 }
 
-
+// EXPORT ERROR HANDLER TO APP
 module.exports = (err, req, res, next) => {
      err.statusCode = err.statusCode || 500;
      err.status = err.status || "Error"
     
-    if(process.env.NODE_ENV !== "production"){
+    if(process.env.NODE_ENV !== "production"){ // DEVELOPMENT ERRORS
         development(err, res)
-    }else {
+    }else { // PRODUCTION ERRORS
+        // VALIDATE NON OPERAIONAL ERROR AND CONVERT 
         let error = {...err}
         if(error.name === "CastError"){ error = handleCastError(error) }
         if(error.code === 11000) { error = handleDuplicateError(error) }

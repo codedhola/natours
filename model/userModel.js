@@ -52,9 +52,7 @@ const userSchema = new mongoose.Schema({
 // HASH PASSWORD BEFORE SAVING TO DATABASE
 userSchema.pre("save", async function(next){
     if(!this.isModified("password")) return next();
-
     this.password = await bcrypt.hash(this.password, 10);
-
     this.confirmPassword = undefined; // CANCEL FROM STORING IN DATABASE
     next();
 })
@@ -74,7 +72,6 @@ userSchema.methods.validateUser = async function(userPass, dbPass){
 userSchema.methods.checkPass = async function(jwtTimeStamp){
     if(this.changePasswordAt){
         const changeStamp = parseInt(this.changePasswordAt.getTime() / 1000);
-
         return changeStamp > jwtTimeStamp
     }
     return false
@@ -85,7 +82,6 @@ userSchema.methods.createPasswordResetToken = function(){
 
     this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
     this.passwordResetTimer = Date.now() + 10 * 60 * 1000;
-
     return resetToken;
 }
 
