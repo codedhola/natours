@@ -49,6 +49,7 @@ const deleteUser = asyncHandler(async (req, res, next) => {
 
 // UDPATE USER PROFILE 
 const updateUserProfile = asyncHandler(async (req, res, next) => {
+        
         const user = await User.findByIdAndUpdate(req.user._id, req.body, { runValidators: true, new: true });
     
         res.status(200).json({
@@ -57,13 +58,26 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
         })
 })
 
+// USER DELETE SELF
+const deleteMe = asyncHandler(async (req, res, next) => {
+    const user = await User.findByIdAndUpdate(req.user);
+    user.active = false;
+    user.save({ validateBeforeSave: false})
+    res.status(200).json({
+        status: "Success",
+        message: "Processing deletion",
+        source: user
+    })
+})
+
 module.exports = {
     getAllUsers,
     getUserById,
     createUser,
     editUser,
     updateUserProfile,
-    deleteUser
+    deleteUser,
+    deleteMe
 }
 
 

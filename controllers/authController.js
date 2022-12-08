@@ -96,7 +96,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
         const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/users/resetpassword/${resetToken}`;
 
-        const message = `follow: ${resetUrl} to change password in 10mins before it expires`;
+        const message = `follow: ${resetUrl} to change password in 10mins before it expires. Please ignore if you did not request for a password`;
         try{ // SEND TOKEN TO USER THROUGH EMAIL
             await sendEmail({
                 email: user.email,
@@ -104,7 +104,8 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
                 message: message
             })
             res.status(200).json({
-                status: "Successful"
+                status: "Successful",
+                message: "Mail sent successfully"
             })
 
         }catch(err){
@@ -113,7 +114,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
             user.passwordResetTimer = undefined;
             await user.save({ validateBeforeSave: false});
 
-            return next(new AppError("There was a problem resetting the password. please try again later"));
+            return next(new AppError("There was a problem resetting the password. please try again later", 500));
         }
 })
 
