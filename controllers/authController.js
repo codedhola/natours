@@ -17,7 +17,11 @@ const signUp = asyncHandler(async (req, res, next) => {
         const user = await User.create(req.body); // CREATE USER
 
         const token = signToken(user._id);  // TOKEN SIGNED BY USER ID 
-
+        res.cookie("JWT", token, {
+            expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+            // secure: true, // https only
+            httpOnly: true
+        })
         res.status(201).json({
             status: "Success",
             token,
@@ -41,7 +45,11 @@ const login = asyncHandler(async (req, res, next) => {
             return next(new AppError("Incorrect Email or Password", 401))
         }
         const token = signToken(user._id); // SIGN JWT TOKEN FOR USER
-
+        res.cookie("JWT", token, {
+            expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+            // secure: true, // https only
+            httpOnly: true
+        })
         res.status(200).json({
             status: "Success",
             token,
