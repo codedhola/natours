@@ -83,7 +83,10 @@ const createTour = catchAsync(async (req, res, next) => {
 const getTourById = catchAsync(async (req, res, next) => {
     const tourId = req.params.id
         // SEARCH DATABASE BASED ON GIVEN ID
-        const tour = await Tour.findById(tourId).select("-__v")
+        const tour = await Tour.findById(tourId).select("-__v").populate({
+            path: "guides",
+            select: "-__v"
+        })
         const err =  new AppError(`Tour with ID ${tourId} Not found`, 404)
         if(!tour) return next(err);
         res.status(200).json({
