@@ -9,6 +9,7 @@ const hpp = require("hpp");
 
 const tourRoutes = require("./routes/tourRoutes");
 const userRoutes = require("./routes/userRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 const AppError = require("./utils/appError");
 const errorHandler = require("./controllers/errorController")
 const app = express();
@@ -40,6 +41,7 @@ app.use("/api", limiter) // SECURE ALL 'API' ENDPOINTS FROM BRUTE-FORCE ATTACKS
 // ROUTE MIDDLEWARE
 app.use("/api/v1/tours", tourRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/reviews", reviewRoutes);
 
 app.all("*", (req, res, next) => {
     const err = new AppError(`Route ${req.originalUrl} can't be found on the server`, 404);  // Better Error Handler

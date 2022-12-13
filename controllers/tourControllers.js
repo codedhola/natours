@@ -109,11 +109,11 @@ const editTour = catchAsync(async (req, res) => {
         })
 })
 
-const deleteTour = catchAsync(async (req, res) => {
+const deleteTour = catchAsync(async (req, res, next) => {
         // DELETE DATA BASED ON ID FROM USERS
         const tourId = req.params.id;
         const tour = await Tour.findByIdAndDelete(tourId);
-        if(!tour) return res.status(404).json({status: "Failed", message: "Tour with given ID not Found"});
+        if(!tour) return next(new AppError("Tour with given ID not Found", 404))
         res.status(204).json()
 })
 
