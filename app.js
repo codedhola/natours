@@ -1,6 +1,5 @@
 // IMPORT ALL NECCESSARY MODULES
 const express = require("express");
-const app = express();
 const morgan = require("morgan");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
@@ -12,6 +11,7 @@ const tourRoutes = require("./routes/tourRoutes");
 const userRoutes = require("./routes/userRoutes");
 const AppError = require("./utils/appError");
 const errorHandler = require("./controllers/errorController")
+const app = express();
 
 app.use(helmet()); // HELMET TO SECURE HEADERS
 const limiter = rateLimit({ // RATE-LIMIT FOR SECURITY
@@ -20,7 +20,7 @@ const limiter = rateLimit({ // RATE-LIMIT FOR SECURITY
     message: "Too many request, please try again in an hour"
 });
 
-app.use(express.json({limit: "10kb"})); // USE JSON MIDDLEWARE TO PARSE JSON DATA
+app.use(express.json({limit: "15kb"})); // USE JSON MIDDLEWARE TO PARSE JSON DATA
 
 // DATA SANITIZATION 
 app.use(mongoSanitize());   // SANITIZE MONGODB 

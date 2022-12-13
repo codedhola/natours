@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
+// const User = require("./userModel")
 
 // CREATE A TOUR SCHEMA
 const tourSchema = new mongoose.Schema({
@@ -58,7 +59,37 @@ const tourSchema = new mongoose.Schema({
     secreteTour: {
         type: Boolean,
         default: false
-    }
+    },
+    startLocation: {
+        // GeoJSON
+        type: {
+            type: String,
+            dafault: "Point",
+            enum: ["Point"]
+        },
+        coordinates: [Number],
+        address: String,
+        description: String
+    },
+    locations: [
+        {
+            type: {
+                type: String,
+                default: "Point",
+                enum: ["Point"]
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+            day: Number
+        }
+    ],
+    guides: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: "User"
+        }
+    ]
 }, {
     toJSON: { virtuals: true},
     toObject: { virtuals: true}
@@ -75,6 +106,13 @@ tourSchema.pre("save", function(next) {
     this.slug = slugify(this.name, { lower: true})
     next();
 })
+
+//  A PRE-SAVE HOOK TO SAVE TO EMBED USER GUIDES
+// tourSchema.pre("save", async function(next) {
+//     const guidesPromise = this.guides.map(async id => await User.findById(id))
+//     this.guides = await Promise.all(guidesPromise)
+//     next()
+// })
 
 // tourSchema.post("save", function(doc, next) {
 
