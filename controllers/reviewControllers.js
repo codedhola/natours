@@ -1,5 +1,6 @@
 const asyncHandler = require("./../utils/asyncHandler")
 const Review = require("./../model/reviewModel")
+
 const getAllReviews = asyncHandler(async(req, res, next) => {
     console.log("Reviews loading...")
     const reviews = await Review.find();
@@ -11,10 +12,14 @@ const getAllReviews = asyncHandler(async(req, res, next) => {
 })
 
 const getReviewById = asyncHandler(async(req, res, next) => {
-    const id = req.params.id
+    const id = req.params.reviewId
+    console.log(id)
     const review = await Review.findById(id).populate({
-        path: "tour user",
-        select: "-__v -changePasswordAt -role"
+        path: "tour",
+        select: "-__v"
+    }).populate({
+        path: "user",
+        select: "-__v -role -changePasswordAt "
     })
     res.status(200).json({
         status: "Successful",
@@ -23,8 +28,10 @@ const getReviewById = asyncHandler(async(req, res, next) => {
 })
 
 const postReview = asyncHandler(async(req, res, next) => {
-    
-    const review = await Review.create(req. body)
+    console.log(req.params)
+    if(!req.body.tour) req.body.tour = req.params.id
+    if(!req.body.user) req.body.user = req.user   
+    const review = await Review.create(req.body)
     res.status(200).json({
         status: "Successful",
         result: review

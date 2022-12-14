@@ -1,15 +1,15 @@
-const router = require("express").Router()
+const router = require("express").Router({ mergeParams: true})
 const {getAllReviews, getReviewById, postReview, deleteReview, editReview} = require("./../controllers/reviewControllers")
 const { protect, restrictions } = require("./../controllers/authController")
 
-router.get("/", getAllReviews)
+router.get("/reviews", getAllReviews)
 
-router.get("/:id", getReviewById)
+router.get("/:reviewId", protect, restrictions("user"), getReviewById)
 
 router.post("/", protect, restrictions("user"), postReview)
 
-router.patch("/:id", protect, restrictions("user"), editReview)
+router.patch("/:reviewId", protect, restrictions("user"), editReview)
 
-router.delete("/:id", protect, restrictions("user"), deleteReview)
+router.delete("/;reviewId", protect, restrictions("user"), deleteReview)
 
 module.exports = router

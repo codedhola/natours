@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const { getAllTours, createTour, getTourById, editTour, deleteTour, topBest, getTourStats, getMonthlyPlan} = require("../controllers/tourControllers");
 const {protect} = require("./../controllers/authController");
+const reviewRoutes = require("./../routes/reviewRoutes")
+
+router.use("/:tourId/reviews", reviewRoutes)
 
 // GET ALL TOUR
 router.get("/", protect, getAllTours);

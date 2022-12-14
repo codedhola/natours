@@ -71,6 +71,7 @@ const createTour = catchAsync(async (req, res, next) => {
     // GET DATA FROM USERS
     const body = req.body;
         // PARSE DATA TO DATABASE
+        if(!body) return next(new AppError("Please Enter fields", 400))
     const newTour = await Tour.create(body);
     res.status(201).json({
         status: "success",
@@ -86,7 +87,7 @@ const getTourById = catchAsync(async (req, res, next) => {
     const tour = await Tour.findById(tourId).select("-__v").populate({
         path: "guides",
         select: "-__v"
-    }).populate("reviews")
+    }).populate({path:"reviews", select: "-__v"})
     const err =  new AppError(`Tour with ID ${tourId} Not found`, 404)
     if(!tour) return next(err);
     res.status(200).json({
