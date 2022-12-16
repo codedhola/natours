@@ -87,7 +87,7 @@ const getTourById = catchAsync(async (req, res, next) => {
     const tour = await Tour.findById(tourId).select("-__v").populate({
         path: "guides",
         select: "-__v"
-    }).populate({path:"reviews", select: "-__v"})
+    }).populate({path:"reviews", select: " -createdAt"})
     const err =  new AppError(`Tour with ID ${tourId} Not found`, 404)
     if(!tour) return next(err);
     res.status(200).json({

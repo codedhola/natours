@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getAllUsers, createUser, getUserById, editUser, deleteUser, updateUserProfile, deleteMe } = require("../controllers/userControllers");
+const { getAllUsers, createUser, getUserById, editUser, deleteUser, checkProfile, updateUserProfile, deleteMe } = require("../controllers/userControllers");
 const { signUp, login, forgotPassword, resetPassword, updatePassword } = require("../controllers/authController");
 const { protect, restrictions } = require("./../controllers/authController");
 
@@ -9,6 +9,9 @@ router.get("/", getAllUsers);
 
 // CREATE A USER
 router.post("/", createUser);
+
+// VIEW PROFILE
+router.get("/profile", protect, checkProfile)
 
 // SIGNUP A USER
 router.post("/auth/signup", signUp);

@@ -47,13 +47,23 @@ const editUser = (req, res) => {
 // DELETE A USER: ADMIN PRIVILEGE
 const deleteUser = asyncHandler(async (req, res, next) => {
     const id = req.params.id;
-       const user = await User.findByIdAndDelete(id);
+    const user = await User.findByIdAndDelete(id);
        
-       if(!user) return next(new AppError("This user ID does not exist", 404));
-        res.status(204).json({
-            status: "Success",
-            message: null
-        })
+    if(!user) return next(new AppError("This user ID does not exist", 404));
+    res.status(204).json({
+        status: "Success",
+        message: null
+    })
+})
+
+// CHECK PROFILE
+const checkProfile = asyncHandler(async (req, res, next) => {
+    const profile = await User.findById(req.user.id).select("-__v")
+    console.log(profile)
+    res.status(200).json({
+        status: "Success",
+        result: profile
+    })
 })
 
 // UDPATE USER PROFILE 
@@ -86,6 +96,7 @@ module.exports = {
     getUserById,
     createUser,
     editUser,
+    checkProfile,
     updateUserProfile,
     deleteUser,
     deleteMe
