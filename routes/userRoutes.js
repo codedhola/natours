@@ -5,9 +5,9 @@ const { signUp, login, forgotPassword, resetPassword, updatePassword } = require
 const { protect, restrictions } = require("./../controllers/authController");
 
 // GET ALL USER
-router.get("/", getAllUsers);
+router.get("/", protect, restrictions("admin"), getAllUsers);
 
-// CREATE A USER
+// ADMIN CREATE A USER
 router.post("/", createUser);
 
 // VIEW PROFILE
@@ -35,11 +35,12 @@ router.patch("/auth/updateprofile", protect, updateUserProfile);
 router.delete("/auth/deleteMe", protect, deleteMe);
 
 // GET A USER BY ID
-router.get("/:id", getUserById);
+router.get("/:id", protect, getUserById);
 
 // EDIT A USER BY ID
-router.patch("/:id", editUser);
+router.patch("/:id", protect, restrictions("admin"), editUser);
 
 // DELETE A USER BY ID
 router.delete("/:id",protect, restrictions("admin", "lead"), deleteUser);
+
 module.exports = router;

@@ -21,28 +21,40 @@ const getAllUsers = asyncHandler(async (req, res) => {
 })
 
 // GET A USER BY ID
-const getUserById = (req, res) => {
-    res.status(500).send({
-        status: "Failed",
-        message: "USER haven't been created yet... check back"
-    });
-}
+const getUserById = asyncHandler(async  (req, res) => {
+    const id = req.params.id
 
-// CREATE A USER => ADMIN AND LEAD
-const createUser = (req, res) => {
+    const users = await User.findById(id);
+        res.status(200).send({
+            status: "success",
+            message: users
+        });
+})
+
+// CREATE A USER => ADMIN
+const createUser = asyncHandler(async (req, res) => {
+    const user = await User.create(req.body); // CREATE USER
     res.status(500).send({
         status: "Failed",
-        message: "USER haven't been created yet... check back"
+        message: user
     });
-}
+})
 
 // EDIT USER: ADMIN PRIVILEGE
-const editUser = (req, res) => {
+const editUser = asyncHandler(async (req, res) => {
+    const id = req.params.id;
+    const body = {
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        role: req.body.role
+    }
+    const user = await User.findByIdAndUpdate(id, body)
     res.status(500).send({
-        status: "Failed",
-        message: "USER haven't been created yet... check back"
+        status: "Success",
+        result: user
     });
-}
+})
 
 // DELETE A USER: ADMIN PRIVILEGE
 const deleteUser = asyncHandler(async (req, res, next) => {
@@ -59,7 +71,6 @@ const deleteUser = asyncHandler(async (req, res, next) => {
 // CHECK PROFILE
 const checkProfile = asyncHandler(async (req, res, next) => {
     const profile = await User.findById(req.user.id).select("-__v")
-    console.log(profile)
     res.status(200).json({
         status: "Success",
         result: profile
@@ -70,7 +81,6 @@ const checkProfile = asyncHandler(async (req, res, next) => {
 const updateUserProfile = asyncHandler(async (req, res, next) => {
     if(req.body.password || req.body.confirmPassword) return next(new AppError("You cant update your password here", 400))
     if(req.body._id) return next(new AppError("Invalid ID input", 400))
-    console.log(req.body, req.user)
         const user = await User.findByIdAndUpdate(req.user._id, req.body, { runValidators: true, new: true });
     
         res.status(200).json({
@@ -86,7 +96,7 @@ const deleteMe = asyncHandler(async (req, res, next) => {
     user.save({ validateBeforeSave: false})
     res.status(200).json({
         status: "Success",
-        message: "Processing deletion",
+        message: "User has been deactivated... more info will be sent to your gmail",
         source: user
     })
 })

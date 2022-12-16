@@ -14,19 +14,20 @@ const signToken = id => {
 
 // SIGNUP PROCESS
 const signUp = asyncHandler(async (req, res, next) => {
-        const user = await User.create(req.body); // CREATE USER
+    if(req.body.role) return next(new AppError("Can't Specify role", 400))
+    const user = await User.create(req.body); // CREATE USER
 
-        const token = signToken(user._id);  // TOKEN SIGNED BY USER ID 
-        res.cookie("JWT", token, {
-            expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
-            // secure: true, // https only
-            httpOnly: true
-        })
-        res.status(201).json({
-            status: "Success",
-            token,
-            data: user
-        })
+    const token = signToken(user._id);  // TOKEN SIGNED BY USER ID 
+    res.cookie("JWT", token, {
+        expires: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+        // secure: true, // https only
+        httpOnly: true
+    })
+    res.status(201).json({
+        status: "Success",
+        token,
+        data: user
+    })
 })
 
 // LOGIN PROCESS
