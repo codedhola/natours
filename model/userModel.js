@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        minlength: 10,
+        minlength: 5,
         maxlength: 25,
         required: [true, "User must specify a name"]
     },
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ["user", "guide", "lead", "admin"],
+        enum: ["user", "guide", "lead-guide", "admin"],
         default: "user"
     },
     changePasswordAt: Date,

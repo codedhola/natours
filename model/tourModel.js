@@ -96,6 +96,10 @@ const tourSchema = new mongoose.Schema({
 }
 );
 
+// CREATE AN INDEX
+tourSchema.index({ price: 1, ratingsAverage: 1})
+tourSchema.index({ slug: 1})
+
 // VIRTUAL DOCUMENT 
 tourSchema.virtual("durationsWeeks").get(function() {
     return this.duration / 7;
