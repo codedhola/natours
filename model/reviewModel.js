@@ -37,6 +37,26 @@ reviewSchema.pre(/^find/, function(next){
     next()
 })
 
+reviewSchema.static.calAverageRatings = async function(tourId){
+    const stats = await this.aggregate([
+        {
+            $match: { tour: tourId}
+        },
+        // {
+        //     $group: {
+        //         _id: "$tour",
+        //         nRaing: { $sum: 1},
+        //         avgRating: { $avg: "$rating"}
+        //     }
+        // }
+    ])
+    console.log(stats)
+}
+
+reviewSchema.post("save", function(){
+    this.constructor.calAverageRatings(this.tour)
+})
+
 // reviewSchema.pre(/^find/, function(next) {
 //     this.populate("user")
 //     next();

@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { getAllTours, createTour, getTourById, editTour, deleteTour, topBest, getTourStats, getMonthlyPlan} = require("../controllers/tourControllers");
-const {protect} = require("./../controllers/authController");
+const {protect, restrictions} = require("./../controllers/authController");
 const reviewRoutes = require("./../routes/reviewRoutes")
 
 router.use("/:tourId/reviews", reviewRoutes)
 
 // GET ALL TOUR
-router.get("/", protect, getAllTours);
+router.get("/", getAllTours);
 
 // ALIAS TOP BEST ROUTE 
 router.get("/top-best", topBest, getAllTours);
@@ -25,9 +25,9 @@ router.post("/", createTour);
 router.get("/:id", getTourById);
 
 // EDIT A TOUR BY ID
-router.patch("/:id", editTour);
+router.patch("/:id", protect, restrictions("admin"), editTour);
 
 // DELETE A TOUR BY ID
-router.delete("/:id", deleteTour);
+router.delete("/:id", protect, restrictions("admin"), deleteTour);
 
 module.exports = router;
