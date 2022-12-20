@@ -10,6 +10,6 @@ router.get("/:reviewId", protect, restrictions("user"), getReviewById)
 
 router.patch("/:reviewId", protect, restrictions("user"), editReview)
 
-router.delete("/:reviewId", protect, restrictions("user"), deleteReview)
+router.delete("/:reviewId", protect, restrictions("admin"), deleteReview)
 
 module.exports = router

@@ -45,7 +45,7 @@ const editReview = asyncHandler(async(req, res, next) => {
 })
 
 const deleteReview = asyncHandler(async(req, res, next) => {
-    const id = req.params.id
+    const id = req.params.reviewId
     await Review.findByIdAndDelete(id)
     res.status(204).json({
         status: "Successful"
