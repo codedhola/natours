@@ -1,5 +1,6 @@
 const asyncHandler = require("./../utils/asyncHandler")
-const Review = require("./../model/reviewModel")
+const Review = require("./../model/reviewModel");
+const AppError = require("../utils/appError");
 
 const getAllReviews = asyncHandler(async(req, res, next) => {
     const tour = req.params.tourId
@@ -36,7 +37,8 @@ const postReview = asyncHandler(async(req, res, next) => {
 })
 
 const editReview = asyncHandler(async(req, res, next) => {
-    const id = req.params.id
+    const id = req.params.reviewId
+    if(!id) return next(new AppError("Reviews is broken", 404))
     const review = await Review.findByIdAndUpdate(id, req. body)
     res.status(200).json({
         status: "Successful",
@@ -46,6 +48,7 @@ const editReview = asyncHandler(async(req, res, next) => {
 
 const deleteReview = asyncHandler(async(req, res, next) => {
     const id = req.params.reviewId
+    if(!id) return new AppError("Review link is broken ", 404)
     await Review.findByIdAndDelete(id)
     res.status(204).json({
         status: "Successful"
