@@ -35,10 +35,10 @@ const reviewSchema = new mongoose.Schema({
 
 reviewSchema.index({tour: 1, user: 1 }, { unique: true})
 
-// reviewSchema.pre(/^find/, function(next){
-//     // this.find().select("-tour -user")
-//     next()
-// })
+reviewSchema.pre(/^find/, function(next){
+    // this.find().select("-tour -user")
+    next()
+})
 
 reviewSchema.statics.calAverageRatings = async function(tourId){
     const stats = await this.aggregate([
@@ -66,12 +66,14 @@ reviewSchema.statics.calAverageRatings = async function(tourId){
     }
 }
 
-reviewSchema.post("save", function(){
+reviewSchema.post("save", function(docs, next){
     this.constructor.calAverageRatings(this.tour)
+
+    next()
 })
 
 reviewSchema.pre(/^findOneAnd/, async function(next){
-    this.rev = await this.findOne();
+    this.rev = await this.clone().findOne();
     console.log(this.rev)
     next()
 })
