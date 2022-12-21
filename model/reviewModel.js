@@ -33,6 +33,7 @@ const reviewSchema = new mongoose.Schema({
 }
 )
 
+// PREVENT PARAMETER DUPLICATES
 reviewSchema.index({tour: 1, user: 1 }, { unique: true})
 
 reviewSchema.pre(/^find/, function(next){
@@ -68,13 +69,11 @@ reviewSchema.statics.calAverageRatings = async function(tourId){
 
 reviewSchema.post("save", function(docs, next){
     this.constructor.calAverageRatings(this.tour)
-
     next()
 })
 
 reviewSchema.pre(/^findOneAnd/, async function(next){
     this.rev = await this.clone().findOne();
-    console.log(this.rev)
     next()
 })
 

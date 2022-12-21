@@ -196,6 +196,24 @@ const getMonthlyPlan = catchAsync(async (req, res) => {
     })
 })
 
+const getToursWithin = catchAsync(async (req, res, next) => {
+    const { distance, latlng, unit } = req.params;
+    const [lat, lng] = latlng.split(",");
+
+    if(!lat || !lng) return next(new AppError("Please provide longitude and latitude", 400))
+    const radius = unit === "mi" ? distance / 3963.2 : distance / 6378.1;
+    console.log(radius)
+    const tours = await Tour.find({ startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius]}}})
+
+    res.status(200).json({
+        status: "Success",
+        results: tours.length,
+        data: {
+            data: tours
+        }
+    })
+})
+
 // EXPORT ALL CONTROLLER FUNCTION 
 module.exports = {
     getAllTours,
@@ -205,5 +223,6 @@ module.exports = {
     deleteTour,
     topBest,
     getTourStats,
-    getMonthlyPlan
+    getMonthlyPlan,
+    getToursWithin
 }

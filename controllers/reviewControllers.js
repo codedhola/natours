@@ -48,7 +48,7 @@ const editReview = asyncHandler(async(req, res, next) => {
 
 const deleteReview = asyncHandler(async(req, res, next) => {
     const id = req.params.reviewId
-    if(!id) return new AppError("Review link is broken ", 404)
+    if(!id) return next(new AppError("Review link is broken ", 404))
     await Review.findByIdAndDelete(id)
     res.status(204).json({
         status: "Successful"

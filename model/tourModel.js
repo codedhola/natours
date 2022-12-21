@@ -16,7 +16,8 @@ const tourSchema = new mongoose.Schema({
         type: Number,
         default: 3.5,
         min: [1, "Lowest Rating exceeded"],
-        max: [5, "Highest Rating exceeded"]
+        max: [5, "Highest Rating exceeded"],
+        set: val => Math.round(val * 10) / 10
     }, 
     ratingsQuantity: Number,
     price: {
@@ -99,6 +100,7 @@ const tourSchema = new mongoose.Schema({
 // CREATE AN INDEX
 tourSchema.index({ price: 1, ratingsAverage: 1})
 tourSchema.index({ slug: 1})
+tourSchema.index({ startLocation: "2dsphere"})
 
 // VIRTUAL DOCUMENT 
 tourSchema.virtual("durationsWeeks").get(function() {

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getAllTours, createTour, getTourById, editTour, deleteTour, topBest, getTourStats, getMonthlyPlan} = require("../controllers/tourControllers");
+const { getAllTours, createTour, getTourById, editTour, deleteTour, topBest, getTourStats, getMonthlyPlan, getToursWithin} = require("../controllers/tourControllers");
 const {protect, restrictions} = require("./../controllers/authController");
 const reviewRoutes = require("./../routes/reviewRoutes")
 
@@ -8,6 +8,9 @@ router.use("/:tourId/reviews", reviewRoutes)
 
 // GET ALL TOUR
 router.get("/", getAllTours);
+
+//
+router.get("/tours-within/:distance/center/:latlng/unit/:unit", getToursWithin)
 
 // ALIAS TOP BEST ROUTE 
 router.get("/top-best", topBest, getAllTours);
