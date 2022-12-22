@@ -202,7 +202,6 @@ const getToursWithin = catchAsync(async (req, res, next) => {
 
     if(!lat || !lng) return next(new AppError("Please provide longitude and latitude", 400))
     const radius = unit === "mi" ? distance / 3963.2 : distance / 6378.1;
-    console.log(radius)
     const tours = await Tour.find({ startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius]}}})
 
     res.status(200).json({
@@ -210,6 +209,42 @@ const getToursWithin = catchAsync(async (req, res, next) => {
         results: tours.length,
         data: {
             data: tours
+        }
+    })
+})
+
+const getToursDistance = catchAsync(async (req, res, next) => {
+    const { latlng, unit } = req.params;
+    const [lat, lng] = latlng.split(",");
+    const multiplier = unit === "mi" ? 0.000621371 : 0.001; 
+
+    if(!lat || !lng) return next(new AppError("Please provide longitude and latitude", 400))
+    const distance = await Tour.aggregate([
+        {
+            $geoNear: {
+                near: {
+                    type: "Point",
+                    coordinates: [lng * 1, lat * 1]
+                },
+                distanceField: "distance",
+                distanceMultiplier: multiplier
+            }
+        },
+        {
+            $project: {
+                distance: 1,
+                name: 1
+            }
+        }
+    ])
+
+
+
+    res.status(200).json({
+        status: "Success",
+        results: tours.length,
+        data: {
+            data: distance
         }
     })
 })
@@ -224,5 +259,6 @@ module.exports = {
     topBest,
     getTourStats,
     getMonthlyPlan,
-    getToursWithin
+    getToursWithin,
+    getToursDistance
 }
