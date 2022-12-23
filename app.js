@@ -1,4 +1,5 @@
 // IMPORT ALL NECCESSARY MODULES
+const path = require("path")
 const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
@@ -13,6 +14,9 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const AppError = require("./utils/appError");
 const errorHandler = require("./controllers/errorController")
 const app = express();
+
+app.set("view engine", "pug")
+app.set("views", path.join(__dirname, "views"))
 
 app.use(helmet()); // HELMET TO SECURE HEADERS
 const limiter = rateLimit({ // RATE-LIMIT FOR SECURITY
