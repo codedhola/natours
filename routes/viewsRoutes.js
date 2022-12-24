@@ -1,4 +1,5 @@
 const router = require("express").Router()
+const { overview, tour} = require("./../controllers/viewControllers")
 
 router.get("/", (req, res) => {
     res.status(200).render("base", { 
@@ -7,13 +8,9 @@ router.get("/", (req, res) => {
     })
 })
 
-router.get("/overview", (req, res) => {
-    res.status(200).render("overview", { title: "All Tours"})
-})
+router.get("/overview", overview)
 
-router.get("/tour", (req, res) => {
-    res.status(200).render("tour", { title: "Forest Hiker"})
-})
+router.get("/tour", tour)
 
 
 module.exports = router
