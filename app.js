@@ -11,8 +11,9 @@ const hpp = require("hpp");
 const tourRoutes = require("./routes/tourRoutes");
 const userRoutes = require("./routes/userRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const viewsRoutes = require("./routes/viewsRoutes");
 const AppError = require("./utils/appError");
-const errorHandler = require("./controllers/errorController")
+const errorHandler = require("./controllers/errorController");
 const app = express();
 
 // VIEWS 
@@ -44,13 +45,7 @@ if(process.env.NODE_ENV === "development"){
     app.use(morgan("dev"));
 }
 
-
-app.get("/", (req, res) => {
-    res.status(200).render("base", { 
-        tour: "The park camper",
-        user: "Coded hola"
-    })
-})
+app.use("/", viewsRoutes)
 
 app.use("/api", limiter) // SECURE ALL 'API' ENDPOINTS FROM BRUTE-FORCE ATTACKS
 
