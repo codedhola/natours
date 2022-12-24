@@ -15,8 +15,12 @@ const AppError = require("./utils/appError");
 const errorHandler = require("./controllers/errorController")
 const app = express();
 
+// VIEWS 
 app.set("view engine", "pug")
 app.set("views", path.join(__dirname, "views"))
+
+// STATIC FILES FOR PUBLIC USE
+app.use(express.static(path.join(__dirname, "public")))
 
 app.use(helmet()); // HELMET TO SECURE HEADERS
 const limiter = rateLimit({ // RATE-LIMIT FOR SECURITY
@@ -39,6 +43,14 @@ app.use(hpp({
 if(process.env.NODE_ENV === "development"){
     app.use(morgan("dev"));
 }
+
+
+app.get("/", (req, res) => {
+    res.status(200).render("base", { 
+        tour: "The park camper",
+        user: "Coded hola"
+    })
+})
 
 app.use("/api", limiter) // SECURE ALL 'API' ENDPOINTS FROM BRUTE-FORCE ATTACKS
 
