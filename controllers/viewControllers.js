@@ -1,5 +1,14 @@
-const overview = (req, res) => {
-    res.status(200).render("overview", { title: "All Tours"})
+const Tours = require("./../model/tourModel")
+
+const overview = async (req, res) => {
+    const tours = await Tours.find()
+    console.log(tours)
+    const data = {
+        title: "Tours overview",
+        tours
+    }
+
+    res.status(200).render("overview", data)
 }
 
 const tour = (req, res) => {

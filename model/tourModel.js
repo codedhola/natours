@@ -33,6 +33,7 @@ const tourSchema = new mongoose.Schema({
             message: "Discount price is more than expected price"
     }
     },
+    maxGroupSize: Number,
     duration: {
         type: Number,
         default: 5
