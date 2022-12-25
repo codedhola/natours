@@ -41,6 +41,14 @@ reviewSchema.pre(/^find/, function(next){
     next()
 })
 
+reviewSchema.pre(/^find/, function(next) {
+    this.populate({
+        path: "user",
+        select: "+name"
+    })
+    next();
+});
+
 reviewSchema.statics.calAverageRatings = async function(tourId){
     const stats = await this.aggregate([
         {
@@ -77,14 +85,12 @@ reviewSchema.pre(/^findOneAnd/, async function(next){
     next()
 })
 
+
+
 reviewSchema.post(/^findOneAnd/, async function(){
     await this.rev.constructor.calAverageRatings(this.rev.tour)
 })
 
-// reviewSchema.pre(/^find/, function(next) {
-//     this.populate("user")
-//     next();
-// });
 
 
 const Review = mongoose.model("Review", reviewSchema)
