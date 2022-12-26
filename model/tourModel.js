@@ -19,6 +19,7 @@ const tourSchema = new mongoose.Schema({
         max: [5, "Highest Rating exceeded"],
         set: val => Math.round(val * 10) / 10
     }, 
+    description: String,
     ratingsQuantity: Number,
     price: {
         type: Number,
