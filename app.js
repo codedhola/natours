@@ -23,7 +23,20 @@ app.set("views", path.join(__dirname, "views"))
 // STATIC FILES FOR PUBLIC USE
 app.use(express.static(path.join(__dirname, "public")))
 
-app.use(helmet()); // HELMET TO SECURE HEADERS
+// app.use(helmet()); // HELMET TO SECURE HEADERS
+app.use(helmet({
+        crossOriginEmbedderPolicy: false,
+        crossOriginResourcePolicy: {
+            allowOrigins: ['*']
+        },
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ['*'],
+                scriptSrc: ["* data: 'unsafe-eval' 'unsafe-inline' blob:"]
+            }
+        }
+    }))
+
 const limiter = rateLimit({ // RATE-LIMIT FOR SECURITY
     max: 100,
     windowMs: 60 * 60 * 1000,
