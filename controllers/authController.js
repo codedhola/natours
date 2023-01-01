@@ -57,6 +57,28 @@ const login = asyncHandler(async (req, res, next) => {
         })
 })
 
+// CHECK IS LOGGED IN FOR EVERY REQUEST
+// PROTECT ROUTES: AUTHORIZATION
+const isLoggedIn = asyncHandler(async (req, res, next) => {
+    if(req.cookies.JWT){ // AUTH WITH JWT COOKIES
+        const decoded = await promisify(jwt.verify)(req.cookies.JWT, process.env.JWT_SECRET);
+        
+        // CHECK IF JWT TOKEN HAS A VALID USER FROM DATABASE
+        const user = await User.findById(decoded.id);
+
+        
+    if(!user) return next(); // ERROR IF INVALID USER
+
+    // CHECK IF PASSWORD IS CHANGED
+    if(!user.checkPass(decoded.iat)) return next();
+
+    // VALIDE LOGGED IN USER
+    res.locals.user = user
+    return next()
+}
+    next();
+})
+
 // PROTECT ROUTES: AUTHORIZATION
 const protect = asyncHandler(async (req, res, next) => {
     let token;
@@ -64,7 +86,10 @@ const protect = asyncHandler(async (req, res, next) => {
     // SEARCH FOR TOKEN FROM REQUEST
     if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
         token = req.headers.authorization.split(" ")[1]; // GET THE TOKEN STRING
+    }else if(req.cookies.jwt){ // AUTH WITH JWT COOKIES
+        token = req.cookies.jwt
     }
+
     //  CHECK IF TOKEN IS AVAILABLE
     if(!token) return next(new AppError("You are not logged in", 401));
         // CHECK IF JWT TOKEN IS VALID 
@@ -181,5 +206,6 @@ module.exports = {
     restrictions,
     forgotPassword,
     resetPassword,
-    updatePassword
+    updatePassword,
+    isLoggedIn
 }

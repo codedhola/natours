@@ -7,6 +7,7 @@ const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const cookieParser = require("cookie-parser");
 
 const tourRoutes = require("./routes/tourRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -44,6 +45,7 @@ const limiter = rateLimit({ // RATE-LIMIT FOR SECURITY
 });
 
 app.use(express.json({limit: "15kb"})); // USE JSON MIDDLEWARE TO PARSE JSON DATA
+app.use(cookieParser());
 
 // DATA SANITIZATION 
 app.use(mongoSanitize());   // SANITIZE MONGODB 

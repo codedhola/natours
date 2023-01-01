@@ -3,7 +3,6 @@ const Tour = require("./../model/tourModel")
 
 const overview = async (req, res) => {
     const tours = await Tour.find()
-    console.log(tours)
     const data = {
         title: "Tours overview",
         tours
@@ -22,14 +21,16 @@ const tour = async (req, res, next) => {
     .populate({
         path: "reviews"
     })
-    console.log(slug)
-    console.log(tour)
     if(!tour) return res.status(404).render("tour", { title: "Not Found"})
 
     res.status(200).render("tour", { title: tour.name, tour})
 }
 
+const loginUser = async (req, res, next) => {
+    res.status(200).render("login", { title: "Login"})
+}
 module.exports = {
     overview,
-    tour
+    tour,
+    loginUser
 }
