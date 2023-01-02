@@ -57,27 +57,40 @@ const login = asyncHandler(async (req, res, next) => {
         })
 })
 
+// LOG OUT
+const logOut = (req, res, next) => {
+    res.cookie("JWT", "logged out", {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    })
+    res.status(200).json({ status: "Success"})
+}
+
 // CHECK IS LOGGED IN FOR EVERY REQUEST
 // PROTECT ROUTES: AUTHORIZATION
-const isLoggedIn = asyncHandler(async (req, res, next) => {
-    if(req.cookies.JWT){ // AUTH WITH JWT COOKIES
-        const decoded = await promisify(jwt.verify)(req.cookies.JWT, process.env.JWT_SECRET);
-        
-        // CHECK IF JWT TOKEN HAS A VALID USER FROM DATABASE
-        const user = await User.findById(decoded.id);
-
-        
-    if(!user) return next(); // ERROR IF INVALID USER
-
-    // CHECK IF PASSWORD IS CHANGED
-    if(!user.checkPass(decoded.iat)) return next();
-
-    // VALIDE LOGGED IN USER
-    res.locals.user = user
-    return next()
+const isLoggedIn = async (req, res, next) => {
+    try{
+        if(req.cookies.JWT){ // AUTH WITH JWT COOKIES
+            const decoded = await promisify(jwt.verify)(req.cookies.JWT, process.env.JWT_SECRET);
+            
+            // CHECK IF JWT TOKEN HAS A VALID USER FROM DATABASE
+            const user = await User.findById(decoded.id);
+    
+            
+        if(!user) return next(); // ERROR IF INVALID USER
+    
+        // CHECK IF PASSWORD IS CHANGED
+        if(!user.checkPass(decoded.iat)) return next();
+    
+        // VALIDE LOGGED IN USER
+        res.locals.user = user
+        return next()
+    }
+        next();
+    }catch(err){
+        return next()
+    }
 }
-    next();
-})
 
 // PROTECT ROUTES: AUTHORIZATION
 const protect = asyncHandler(async (req, res, next) => {
@@ -207,5 +220,6 @@ module.exports = {
     forgotPassword,
     resetPassword,
     updatePassword,
-    isLoggedIn
+    isLoggedIn,
+    logOut
 }

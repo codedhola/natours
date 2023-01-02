@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { getAllUsers, createUser, getUserById, editUser, deleteUser, checkProfile, updateUserProfile, deleteMe } = require("../controllers/userControllers");
-const { signUp, login, forgotPassword, resetPassword, updatePassword } = require("../controllers/authController");
+const { signUp, login, forgotPassword, resetPassword, updatePassword, logOut } = require("../controllers/authController");
 const { protect, restrictions } = require("./../controllers/authController");
 
 // GET ALL USER
@@ -18,6 +18,9 @@ router.post("/auth/signup", signUp);
 
 // LOGIN USER
 router.post("/auth/login", login);
+
+// LOG OUT USER
+router.get("/auth/logout", logOut);
 
 // FORGOT PASSWORD
 router.post("/auth/forgotPassword", forgotPassword);
