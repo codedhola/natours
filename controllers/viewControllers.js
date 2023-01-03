@@ -21,7 +21,7 @@ const tour = async (req, res, next) => {
     .populate({
         path: "reviews"
     })
-    if(!tour) return res.status(404).render("tour", { title: "Not Found"})
+    if(!tour) return next(new AppError("Tour not found", 404))
 
     res.status(200).render("tour", { title: tour.name, tour})
 }

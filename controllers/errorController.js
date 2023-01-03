@@ -25,30 +25,63 @@ function handleJwtExpires(){
 }
 
 // ERROR VIEWS FOR DEVELOPMENT
-const development = (err, res) => {
-    res.status(err.statusCode).json({
-        status: err.status,
-        error: err,
-        message: err.message,
-        stack: err.stack
-    })
+const development = (err, req, res) => {
+     // A) API
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack
+    });
+  }
+
+  // B) RENDERED WEBSITE
+  console.error('ERROR 💥', err);
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: err.message
+  });
 }
 
 // ERROR VIEWS FOR PRODUCTION
-const production = (err, res) => {
-    if(err.isOperational){
-        res.status(err.statusCode).json({
-            status: err.status,
-            message: err.message
-        })
-    }else{
-        console.error("Error: " +  err)
-
-        res.status(500).json({
-            status: "Error",
-            message: "An Error Occured, please Try back later"
-        })
+const production = (err, req, res) => {
+    // A) API
+  if (req.originalUrl.startsWith('/api')) {
+    // A) Operational, trusted error: send message to client
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message
+      });
     }
+    // B) Programming or other unknown error: don't leak error details
+    // 1) Log error
+    console.error('ERROR 💥', err);
+    // 2) Send generic message
+    return res.status(500).json({
+      status: 'error',
+      message: 'Something went very wrong!'
+    });
+  }
+
+  // B) RENDERED WEBSITE
+  // A) Operational, trusted error: send message to client
+  if (err.isOperational) {
+    console.log(err);
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      msg: err.message
+    });
+  }
+  // B) Programming or other unknown error: don't leak error details
+  // 1) Log error
+  console.error('ERROR 💥', err);
+  // 2) Send generic message
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: 'Please try again later.'
+  });
 }
 
 // EXPORT ERROR HANDLER TO APP
@@ -57,7 +90,7 @@ module.exports = (err, req, res, next) => {
      err.status = err.status || "Error"
     
     if(process.env.NODE_ENV !== "production"){ // DEVELOPMENT ERRORS
-        development(err, res)
+        development(err, req, res)
     }else { // PRODUCTION ERRORS
         // VALIDATE NON OPERAIONAL ERROR AND CONVERT 
         let error = {...err}
@@ -67,6 +100,6 @@ module.exports = (err, req, res, next) => {
         if(error.name === "JsonWebTokenError") error = handleJwtError()
         if(error.name === "TokenExpiredError") error = handleJwtExpires()
 
-        production(error, res)
+        production(error, req, res)
     }      
 }
