@@ -29,8 +29,14 @@ const tour = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
     res.status(200).render("login", { title: "Login"})
 }
+
+const profile = async (req, res, next) => {
+    res.status(200).render("account", { title: "Login"})
+}
+
 module.exports = {
     overview,
     tour,
-    loginUser
+    loginUser,
+    profile
 }

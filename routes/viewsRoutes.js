@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const { overview, tour, loginUser} = require("./../controllers/viewControllers")
+const { overview, tour, loginUser, profile} = require("./../controllers/viewControllers")
 const { isLoggedIn } = require("./../controllers/authController")
 
 router.use(isLoggedIn)
@@ -17,6 +17,8 @@ router.get("/tour", tour)
 router.get("/tours/:slug", tour)
 
 router.get("/login", loginUser)
+
+router.get("/profile", profile)
 
 
 module.exports = router
