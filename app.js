@@ -45,6 +45,7 @@ const limiter = rateLimit({ // RATE-LIMIT FOR SECURITY
 });
 
 app.use(express.json({limit: "15kb"})); // USE JSON MIDDLEWARE TO PARSE JSON DATA
+app.use(express.urlencoded({ extended: true}))
 app.use(cookieParser());
 
 // DATA SANITIZATION 

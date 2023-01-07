@@ -99,8 +99,8 @@ const protect = asyncHandler(async (req, res, next) => {
     // SEARCH FOR TOKEN FROM REQUEST
     if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
         token = req.headers.authorization.split(" ")[1]; // GET THE TOKEN STRING
-    }else if(req.cookies.jwt){ // AUTH WITH JWT COOKIES
-        token = req.cookies.jwt
+    }else if(req.cookies.JWT){ // AUTH WITH JWT COOKIES
+        token = req.cookies.JWT
     }
 
     //  CHECK IF TOKEN IS AVAILABLE
@@ -118,7 +118,7 @@ const protect = asyncHandler(async (req, res, next) => {
     if(!user.checkPass(decoded.iat)) return next(new AppError("User Password has been changed", 401));
 
     req.user = user;
-
+    res.locals.user = user
     next();
 })
 
@@ -207,7 +207,7 @@ const updatePassword = asyncHandler(async (req, res, next) => {
         await user.save({ runValidator: true})
         //console.log(confirmPasskey);
         res.status(200).json({
-            status: "Successful",
+            status: "Success",
             token
         })
 })
