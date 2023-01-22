@@ -44,6 +44,6 @@ router.get("/:id", protect, getUserById);
 router.patch("/:id", protect, restrictions("admin"), editUser);
 
 // DELETE A USER BY ID
-router.delete("/:id",protect, restrictions("admin", "lead"), deleteUser);
+router.delete("/:id",protect, restrictions("admin"), deleteUser);
 
 module.exports = router;

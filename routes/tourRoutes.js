@@ -25,7 +25,7 @@ router.get("/tour-stats", getTourStats);
 router.get("/tour-stats/:year", getMonthlyPlan);
 
 // CREATE A TOUR
-router.post("/", createTour);
+router.post("/", protect, restrictions("admin"), createTour);
 
 // GET A TOUR BY ID
 router.get("/:id", getTourById);
