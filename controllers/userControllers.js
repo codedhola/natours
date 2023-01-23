@@ -82,7 +82,8 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
     if(req.body.password || req.body.confirmPassword) return next(new AppError("You cant update your password here", 400))
     if(req.body._id) return next(new AppError("Invalid ID input", 400))
         const user = await User.findByIdAndUpdate(req.user._id, req.body, { runValidators: true, new: true });
-    
+        console.log(req.file, req.body)
+
         res.status(200).json({
             status: "Success",
             message: user
