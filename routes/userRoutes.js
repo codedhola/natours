@@ -3,7 +3,7 @@ const router = express.Router();
 const { getAllUsers, createUser, getUserById, editUser, deleteUser, checkProfile, updateUserProfile, deleteMe } = require("../controllers/userControllers");
 const { signUp, login, forgotPassword, resetPassword, updatePassword, logOut } = require("../controllers/authController");
 const { protect, restrictions } = require("./../controllers/authController");
-const { uploadUserPhoto } = require("./../utils/multer")
+const { uploadUserPhoto, resizeUserPhoto } = require("./../utils/multer")
 
 // GET ALL USER
 router.get("/", protect, restrictions("admin"), getAllUsers);
@@ -33,7 +33,7 @@ router.patch("/auth/resetPassword/:token", resetPassword);
 router.patch("/auth/updatepassword", protect , updatePassword);
 
 // UPDATE USER DETAILS
-router.patch("/auth/updateprofile", protect, uploadUserPhoto, updateUserProfile);
+router.patch("/auth/updateprofile", protect, uploadUserPhoto, resizeUserPhoto, updateUserProfile);
 
 // DELETE ME ROUTE
 router.delete("/auth/deleteMe", protect, deleteMe);
