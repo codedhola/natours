@@ -40,7 +40,19 @@ const resizeUserPhoto = (req, res, next) => {
     next()
 }
 
+const uploadTourPhoto = upload.fields([
+    { name: "imageCover", maxCount: 1},
+    { name: "images", maxCount: 3}
+])
+
+const resizeTourPhoto = (req, res, next) => {
+    console.log(req.files)
+    next()
+}
+
 module.exports = {
     uploadUserPhoto,
-    resizeUserPhoto
+    resizeUserPhoto,
+    uploadTourPhoto,
+    resizeTourPhoto
 }

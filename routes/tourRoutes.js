@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { getAllTours, createTour, getTourById, editTour, deleteTour, topBest, getTourStats, getMonthlyPlan, getToursWithin, getToursDistance} = require("../controllers/tourControllers");
+const { uploadTourPhoto, resizeTourPhoto } = require("../utils/multer");
 const {protect, restrictions} = require("./../controllers/authController");
 const reviewRoutes = require("./../routes/reviewRoutes")
 
@@ -31,7 +32,7 @@ router.post("/", protect, restrictions("admin"), createTour);
 router.get("/:id", getTourById);
 
 // EDIT A TOUR BY ID
-router.patch("/:id", protect, restrictions("admin"), editTour);
+router.patch("/:id", protect, restrictions("admin"), uploadTourPhoto, resizeTourPhoto, editTour);
 
 // DELETE A TOUR BY ID
 router.delete("/:id", protect, restrictions("admin"), deleteTour);
