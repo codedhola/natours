@@ -3,6 +3,7 @@ const app = require("./app");
 const mongoose = require("mongoose");
 
 const port = process.env.PORT || 3000;
+mongoose.set('strictQuery', false);
 mongoose.connect(process.env.CONNECT_MONGOOSE).then(() => {
     const server = app.listen(port, () => {
         console.log("Server Running... on port " + port);
