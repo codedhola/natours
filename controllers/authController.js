@@ -159,11 +159,13 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
         const message = `follow: ${resetUrl} to change password in 10mins before it expires. Please ignore if you did not request for a password`;
         try{ // SEND TOKEN TO USER THROUGH EMAIL
-            await sendEmail({
-                email: user.email,
-                subject: "Reset Password request",
-                message: message
-            })
+            await new Email(user, resetUrl).sendPasswordReset()
+            
+            // await sendEmail({
+            //     email: user.email,
+            //     subject: "Reset Password request",
+            //     message: message
+            // })
             res.status(200).json({
                 status: "Successful",
                 message: "Mail sent successfully"
