@@ -3,7 +3,7 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("./../model/userModel");
 const AppError = require("./../utils/appError");
-const sendEmail = require("./../utils/mailTo");
+const Email = require("./../utils/mailTo");
 const asyncHandler = require("./../utils/asyncHandler")
 
 
@@ -15,6 +15,20 @@ const signToken = id => {
 // SIGNUP PROCESS
 const signUp = asyncHandler(async (req, res, next) => {
     if(req.body.role) return next(new AppError("Can't Specify role", 400))
+    const url = `${req.protocol}://${req.get('host')}/auth/updateProfile`
+
+    try{
+        const uploadImageLink = new Email(req.body, url)
+        console.log(uploadImageLink)
+        await uploadImageLink.sendWelcome()
+            
+        console.log(uploadImageLink)
+    }catch(err){
+        return res.status(400).json({
+            status: "error",
+            msg: err
+        })
+    }
     const user = await User.create(req.body); // CREATE USER
 
     const token = signToken(user._id);  // TOKEN SIGNED BY USER ID 

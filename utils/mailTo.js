@@ -21,11 +21,11 @@ module.exports = class Email{
         }
       });
     }
-
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
-      auth: {
+      secure: false,
+      auth: { 
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD
       }
@@ -47,7 +47,7 @@ module.exports = class Email{
       to: this.to,
       subject,
       html,
-      text: htmlToText.fromString(html)
+      // text: htmlToText.fromString(html)
     };
 
     // 3) Create a transport and send email
@@ -55,6 +55,7 @@ module.exports = class Email{
   }
 
   async sendWelcome() {
+    console.log(this.newTransport())
     await this.send('welcome', 'Welcome to the Natours Family!');
   }
 
